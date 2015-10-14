@@ -1,0 +1,5 @@
+suites:
+    main:
+        namespace: SdcProject
+        psr4_prefix: SdcProject
+        src_path: app
