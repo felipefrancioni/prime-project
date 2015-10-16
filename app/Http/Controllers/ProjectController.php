@@ -4,21 +4,21 @@ namespace SdcProject\Http\Controllers;
 
 use Illuminate\Http\Request;
 use SdcProject\Http\Requests;
-use SdcProject\Repositories\ClientRepository;
-use SdcProject\Services\ClientService;
+use SdcProject\Repositories\ProjectRepository;
+use SdcProject\Services\ProjectService;
 
-class ClientController extends Controller {
+class ProjectController extends Controller {
 
-    private $clientRepository;
-    private $clientService;
+    private $projectRepository;
+    private $projectService;
 
     /**
-     * @param ClientRepository $clientRepository
-     * @param ClientService $clientService
+     * @param ProjectRepository $projectRepository
+     * @param ProjectService $projectService
      */
-    public function __construct(ClientRepository $clientRepository, ClientService $clientService) {
-        $this->clientRepository = $clientRepository;
-        $this->clientService = $clientService;
+    public function __construct(ProjectRepository $projectRepository, ProjectService $projectService) {
+        $this->projectRepository = $projectRepository;
+        $this->projectService = $projectService;
     }
 
     /**
@@ -27,8 +27,12 @@ class ClientController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        return $this->clientRepository->all();
+        return $this->projectRepository->with([
+            'owner',
+            'client'
+        ])->all();
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -37,7 +41,7 @@ class ClientController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        return $this->clientService->create($request->all());
+        return $this->projectService->create($request->all());
     }
 
     /**
@@ -47,7 +51,10 @@ class ClientController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show($id) {
-        return $this->clientRepository->find($id);
+        return $this->projectRepository->with([
+            'owner',
+            'client'
+        ])->find($id);
     }
 
 
@@ -59,7 +66,7 @@ class ClientController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-        return $this->clientService->update($request->all(), $id);
+        return $this->projectService->update($request->all(), $id);
     }
 
     /**
@@ -69,6 +76,6 @@ class ClientController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        $this->clientRepository->find($id)->delete();
+        $this->projectRepository->delete($id);
     }
 }
