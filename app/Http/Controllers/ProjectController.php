@@ -2,6 +2,7 @@
 
 namespace SdcProject\Http\Controllers;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use SdcProject\Http\Requests;
 use SdcProject\Repositories\ProjectRepository;
@@ -51,10 +52,17 @@ class ProjectController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show($id) {
-        return $this->projectRepository->with([
-            'owner',
-            'client'
-        ])->find($id);
+        try {
+            return $this->projectRepository->with([
+                'owner',
+                'client'
+            ])->find($id);
+        } catch (ModelNotFoundException $ex) {
+            return [
+                'error' => true,
+                'message' => $ex->getMessage()
+            ];
+        }
     }
 
 
@@ -66,7 +74,14 @@ class ProjectController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-        return $this->projectService->update($request->all(), $id);
+        try {
+            return $this->projectService->update($request->all(), $id);
+        } catch (ModelNotFoundException $ex) {
+            return [
+                'error' => true,
+                'message' => $ex->getMessage()
+            ];
+        }
     }
 
     /**
@@ -76,6 +91,14 @@ class ProjectController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        $this->projectRepository->delete($id);
+        try {
+            $this->projectRepository->delete($id);
+        } catch (ModelNotFoundException $ex) {
+            return [
+                'error' => true,
+                'message' => $ex->getMessage()
+            ];
+        }
+
     }
 }

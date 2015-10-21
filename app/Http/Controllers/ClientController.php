@@ -2,6 +2,8 @@
 
 namespace SdcProject\Http\Controllers;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use SdcProject\Http\Requests;
 use SdcProject\Repositories\ClientRepository;
@@ -47,7 +49,14 @@ class ClientController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show($id) {
-        return $this->clientRepository->find($id);
+        try {
+            return $this->clientRepository->find($id);
+        } catch (ModelNotFoundException $ex) {
+            return [
+                'error' => true,
+                'message' => $ex->getMessage()
+            ];
+        }
     }
 
 
@@ -59,7 +68,14 @@ class ClientController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-        return $this->clientService->update($request->all(), $id);
+        try {
+            return $this->clientService->update($request->all(), $id);
+        } catch (ModelNotFoundException $ex) {
+            return [
+                'error' => true,
+                'message' => $ex->getMessage()
+            ];
+        }
     }
 
     /**
@@ -69,6 +85,19 @@ class ClientController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        $this->clientRepository->find($id)->delete();
+        try {
+            $this->clientRepository->find($id)->delete();
+        } catch (ModelNotFoundException $ex) {
+            return [
+                'error' => true,
+                'message' => $ex->getMessage()
+            ];
+        } catch (QueryException $ex) {
+            return [
+                'error' => true,
+                'message' => $ex->getMessage()
+            ];
+        }
+
     }
 }
