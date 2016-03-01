@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use SdcProject\Entities\Client;
 use SdcProject\Entities\Project;
 
 class ProjectTableSeeder extends Seeder {

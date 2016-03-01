@@ -22,4 +22,13 @@ class Project extends Model {
     public function owner() {
         return $this->belongsTo(User::class);
     }
+
+    public function projectTasks() {
+        return $this->hasMany(ProjectTask::class);
+    }
+
+    public function projectMembers() {
+        return $this->belongsToMany(User::class, 'project_members');
+    }
+
 }

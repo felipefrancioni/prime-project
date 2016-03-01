@@ -11,14 +11,12 @@ namespace SdcProject\Validators;
 
 use Prettus\Validator\LaravelValidator;
 
-class ClientValidator extends LaravelValidator {
+class ProjectTaskValidator extends LaravelValidator {
 
     protected $rules = [
         'name' => 'required|max:60',
-        'responsible' => 'required|max:60',
-        'email' => 'required|max:100|email',
-        'phone' => 'required|max:20',
-        'address' => 'required|max:255',
-        'obs' => 'max:255',
+        'start_date' => 'required|date',
+        'due_date' => 'required|date',
+        'status' => 'required|max:20'
     ];
 }

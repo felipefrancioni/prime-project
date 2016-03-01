@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder {
         $this->call(ClientTableSeeder::class);
         $this->call(UserTableSeeder::class);
         $this->call(ProjectTableSeeder::class);
+        $this->call(ProjectTaskTableSeeder::class);
+        $this->call(ProjectMemberTableSeeder::class);
 
 
         DB::statement("SET foreign_key_checks = 1");

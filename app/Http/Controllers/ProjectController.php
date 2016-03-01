@@ -3,10 +3,12 @@
 namespace SdcProject\Http\Controllers;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use SdcProject\Http\Requests;
 use SdcProject\Repositories\ProjectRepository;
 use SdcProject\Services\ProjectService;
+
 
 class ProjectController extends Controller {
 
@@ -30,7 +32,8 @@ class ProjectController extends Controller {
     public function index() {
         return $this->projectRepository->with([
             'owner',
-            'client'
+            'client',
+            'projectTasks'
         ])->all();
     }
 
@@ -45,6 +48,28 @@ class ProjectController extends Controller {
         return $this->projectService->create($request->all());
     }
 
+
+    /**
+     * @param Request $request
+     * @param $idProject
+     * @return array
+     */
+    public function storeNewMember(Request $request, $idProject) {
+        try {
+            return $this->projectService->addMember($idProject, $request->all());
+        } catch (ModelNotFoundException $ex) {
+            return [
+                'error' => true,
+                'message' => $ex->getMessage()
+            ];
+        } catch (QueryException $ex) {
+            return [
+                'error' => true,
+                'message' => $ex->getMessage()
+            ];
+        }
+    }
+
     /**
      * Display the specified resource.
      *
@@ -55,7 +80,26 @@ class ProjectController extends Controller {
         try {
             return $this->projectRepository->with([
                 'owner',
-                'client'
+                'client',
+                'projectTasks'
+            ])->find($id);
+        } catch (ModelNotFoundException $ex) {
+            return [
+                'error' => true,
+                'message' => $ex->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * This function display the members of project.
+     * @param $id
+     * @return array|mixed
+     */
+    public function showMembers($id) {
+        try {
+            return $this->projectRepository->with([
+                'projectMembers'
             ])->find($id);
         } catch (ModelNotFoundException $ex) {
             return [
@@ -92,7 +136,32 @@ class ProjectController extends Controller {
      */
     public function destroy($id) {
         try {
-            $this->projectRepository->delete($id);
+            return $this->projectRepository->delete($id);
+        } catch (ModelNotFoundException $ex) {
+            return [
+                'error' => true,
+                'message' => $ex->getMessage()
+            ];
+        }
+
+    }
+
+    public function destroyMember($idProject, $idMember) {
+        try {
+            return $this->projectService->removeMember($idProject, $idMember);
+        } catch (ModelNotFoundException $ex) {
+            return [
+                'error' => true,
+                'message' => $ex->getMessage()
+            ];
+        }
+
+    }
+
+    public function isMember($idProject, $idMember) {
+        try {
+            $member = $this->projectService->isMember($idProject, $idMember);
+            return $member ? 'true' : 'false';
         } catch (ModelNotFoundException $ex) {
             return [
                 'error' => true,

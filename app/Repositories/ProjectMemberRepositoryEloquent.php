@@ -11,23 +11,14 @@ use SdcProject\Entities\ProjectMember;
  * Class ProjectMemberRepositoryEloquent
  * @package namespace SdcProject\Repositories;
  */
-class ProjectMemberRepositoryEloquent extends BaseRepository implements ProjectMemberRepository
-{
+class ProjectMemberRepositoryEloquent extends BaseRepository implements ProjectMemberRepository {
     /**
      * Specify Model class name
      *
      * @return string
      */
-    public function model()
-    {
+    public function model() {
         return ProjectMember::class;
     }
 
-    /**
-     * Boot up the repository, pushing criteria
-     */
-    public function boot()
-    {
-        $this->pushCriteria(app(RequestCriteria::class));
-    }
 }

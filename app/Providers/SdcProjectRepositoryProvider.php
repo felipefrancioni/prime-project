@@ -5,8 +5,12 @@ namespace SdcProject\Providers;
 use Illuminate\Support\ServiceProvider;
 use SdcProject\Repositories\ClientRepository;
 use SdcProject\Repositories\ClientRepositoryEloquent;
+use SdcProject\Repositories\ProjectMemberRepository;
+use SdcProject\Repositories\ProjectMemberRepositoryEloquent;
 use SdcProject\Repositories\ProjectRepository;
 use SdcProject\Repositories\ProjectRepositoryEloquent;
+use SdcProject\Repositories\ProjectTaskRepository;
+use SdcProject\Repositories\ProjectTaskRepositoryEloquent;
 
 class SdcProjectRepositoryProvider extends ServiceProvider {
     /**
@@ -26,5 +30,7 @@ class SdcProjectRepositoryProvider extends ServiceProvider {
     public function register() {
         $this->app->bind(ClientRepository::class, ClientRepositoryEloquent::class);
         $this->app->bind(ProjectRepository::class, ProjectRepositoryEloquent::class);
+        $this->app->bind(ProjectTaskRepository::class, ProjectTaskRepositoryEloquent::class);
+        $this->app->bind(ProjectMemberRepository::class, ProjectMemberRepositoryEloquent::class);
     }
 }

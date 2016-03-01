@@ -9,28 +9,34 @@
 namespace SdcProject\Services;
 
 
+use Illuminate\Database\QueryException;
 use Prettus\Validator\Exceptions\ValidatorException;
-use SdcProject\Repositories\ClientRepository;
-use SdcProject\Validators\ClientValidator;
+use SdcProject\Repositories\ProjectTaskRepository;
+use SdcProject\Validators\ProjectTaskValidator;
 
-class ClientService {
+class ProjectTaskService {
 
-    protected $clientRepository;
-    protected $clientValidator;
+    protected $projectTaskRepository;
+    protected $projectTaskValidator;
 
     /**
-     * @param ClientRepository $clientRepository
-     * @param ClientValidator $clientValidator
+     * @param ProjectTaskRepository $projectTaskRepository
+     * @param ProjectTaskValidator $projectTaskValidator
      */
-    public function __construct(ClientRepository $clientRepository, ClientValidator $clientValidator) {
-        $this->clientRepository = $clientRepository;
-        $this->clientValidator = $clientValidator;
+    public function __construct(ProjectTaskRepository $projectTaskRepository, ProjectTaskValidator $projectTaskValidator) {
+        $this->projectTaskRepository = $projectTaskRepository;
+        $this->projectTaskValidator = $projectTaskValidator;
     }
 
     public function create(array $data) {
         try {
-            $this->clientValidator->with($data)->passesOrFail();
-            return $this->clientRepository->create($data);
+            $this->projectTaskValidator->with($data)->passesOrFail();
+            return $this->projectTaskRepository->create($data);
+        } catch (QueryException $e) {
+            return [
+                'error' => true,
+                'message' => $e->getMessage()
+            ];
         } catch (ValidatorException $e) {
             return [
                 'error' => true,
@@ -41,8 +47,8 @@ class ClientService {
 
     public function update(array $data, $id) {
         try {
-            $this->clientValidator->with($data)->passesOrFail();
-            return $this->clientRepository->update($data, $id);
+            $this->projectTaskValidator->with($data)->passesOrFail();
+            return $this->projectTaskRepository->update($data, $id);
         } catch (ValidatorException $e) {
             return [
                 'error' => true,

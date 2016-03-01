@@ -42,3 +42,21 @@ $factory->define(SdcProject\Entities\Project::class, function (Faker\Generator $
         'due_date' => $faker->date()
     ];
 });
+
+$factory->define(SdcProject\Entities\ProjectTask::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->word,
+        'project_id' => rand(1, 10),
+        'start_date' => $faker->date(),
+        'due_date' => $faker->date(),
+        'status' => rand(1, 3),
+    ];
+});
+
+
+$factory->define(SdcProject\Entities\ProjectMember::class, function (Faker\Generator $faker) {
+    return [
+        'project_id' => rand(1, 10),
+        'user_id' => rand(1, 10)
+    ];
+});

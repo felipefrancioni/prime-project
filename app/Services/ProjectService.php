@@ -10,6 +10,7 @@ namespace SdcProject\Services;
 
 
 use Prettus\Validator\Exceptions\ValidatorException;
+use SdcProject\Repositories\ProjectMemberRepository;
 use SdcProject\Repositories\ProjectRepository;
 use SdcProject\Validators\ProjectValidator;
 
@@ -17,14 +18,17 @@ class ProjectService {
 
     protected $projectRepository;
     protected $projectValidator;
+    protected $projectMemberRepository;
 
     /**
      * @param ProjectRepository $projectRepository
+     * @param ProjectMemberRepository $projectMemberRepository
      * @param ProjectValidator $projectValidator
      */
-    public function __construct(ProjectRepository $projectRepository, ProjectValidator $projectValidator) {
+    public function __construct(ProjectRepository $projectRepository, ProjectMemberRepository $projectMemberRepository, ProjectValidator $projectValidator) {
         $this->projectRepository = $projectRepository;
         $this->projectValidator = $projectValidator;
+        $this->projectMemberRepository = $projectMemberRepository;
     }
 
     public function create(array $data) {
@@ -49,6 +53,21 @@ class ProjectService {
                 'message' => $e->getMessageBag()
             ];
         }
+    }
+
+    public function addMember($idProject, array $data) {
+        $project = $this->projectRepository->find($idProject);
+        return $project->projectMembers()->attach($data);
+    }
+
+    public function removeMember($idProject, $idMember) {
+        $project = $this->projectRepository->find($idProject);
+        return $project->projectMembers()->detach($idMember);
+    }
+
+    public function isMember($idProject, $idMember) {
+        $project = $this->projectRepository->find($idProject);
+        return $project->projectMembers()->find($idMember);
     }
 
 

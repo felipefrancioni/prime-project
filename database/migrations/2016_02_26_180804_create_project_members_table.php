@@ -3,14 +3,14 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProjectsMembersTable extends Migration {
+class CreateProjectMembersTable extends Migration {
     /**
      * Run the migrations.
      *
      * @return void
      */
     public function up() {
-        Schema::create('projects_members', function (Blueprint $table) {
+        Schema::create('project_members', function (Blueprint $table) {
             $table->unsignedInteger('project_id');
             $table->unsignedInteger('user_id');
             $table->foreign('project_id')->references('id')->on('projects');
@@ -25,6 +25,6 @@ class CreateProjectsMembersTable extends Migration {
      * @return void
      */
     public function down() {
-        Schema::drop('projects_members');
+        Schema::drop('project_members');
     }
 }

@@ -11,23 +11,14 @@ use SdcProject\Entities\ProjectTask;
  * Class ProjectTaskRepositoryEloquent
  * @package namespace SdcProject\Repositories;
  */
-class ProjectTaskRepositoryEloquent extends BaseRepository implements ProjectTaskRepository
-{
+class ProjectTaskRepositoryEloquent extends BaseRepository implements ProjectTaskRepository {
     /**
      * Specify Model class name
      *
      * @return string
      */
-    public function model()
-    {
+    public function model() {
         return ProjectTask::class;
     }
 
-    /**
-     * Boot up the repository, pushing criteria
-     */
-    public function boot()
-    {
-        $this->pushCriteria(app(RequestCriteria::class));
-    }
 }
