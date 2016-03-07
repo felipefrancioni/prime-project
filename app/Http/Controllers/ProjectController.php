@@ -32,8 +32,7 @@ class ProjectController extends Controller {
     public function index() {
         return $this->projectRepository->with([
             'owner',
-            'client',
-            'projectTasks'
+            'client'
         ])->all();
     }
 
@@ -98,9 +97,7 @@ class ProjectController extends Controller {
      */
     public function showMembers($id) {
         try {
-            return $this->projectRepository->with([
-                'projectMembers'
-            ])->find($id);
+            return $this->projectService->showMembers($id);
         } catch (ModelNotFoundException $ex) {
             return [
                 'error' => true,

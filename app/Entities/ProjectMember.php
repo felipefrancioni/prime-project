@@ -8,7 +8,6 @@ use Prettus\Repository\Traits\TransformableTrait;
 
 class ProjectMember extends Model implements Transformable {
     use TransformableTrait;
-
     protected $fillable = [];
 
 }

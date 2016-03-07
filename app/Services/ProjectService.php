@@ -55,6 +55,15 @@ class ProjectService {
         }
     }
 
+    public function showMembers($idProject) {
+        $project = $this->projectRepository->find($idProject);
+        return $project->projectMembers()->get([
+            'id',
+            'name',
+            'email'
+        ]);
+    }
+
     public function addMember($idProject, array $data) {
         $project = $this->projectRepository->find($idProject);
         return $project->projectMembers()->attach($data);
