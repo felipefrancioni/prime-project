@@ -3,8 +3,7 @@
 namespace SdcProject\Repositories;
 
 use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
-use SdcProject\Repositories\ProjectTaskRepository;
+use SdcProject\Presenters\ProjectTasksPresenter;
 use SdcProject\Entities\ProjectTask;
 
 /**
@@ -19,6 +18,10 @@ class ProjectTaskRepositoryEloquent extends BaseRepository implements ProjectTas
      */
     public function model() {
         return ProjectTask::class;
+    }
+
+    public function presenter() {
+        return ProjectTasksPresenter::class;
     }
 
 }

@@ -3,8 +3,7 @@
 namespace SdcProject\Repositories;
 
 use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
-use SdcProject\Repositories\ProjectMemberRepository;
+use SdcProject\Presenters\ProjectMembersPresenter;
 use SdcProject\Entities\ProjectMember;
 
 /**
@@ -19,6 +18,10 @@ class ProjectMemberRepositoryEloquent extends BaseRepository implements ProjectM
      */
     public function model() {
         return ProjectMember::class;
+    }
+
+    public function presenter() {
+        return ProjectMembersPresenter::class;
     }
 
 }

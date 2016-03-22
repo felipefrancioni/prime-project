@@ -5,6 +5,7 @@ namespace SdcProject\Repositories;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use SdcProject\Entities\Client;
+use SdcProject\Presenters\ClientPresenter;
 
 class ClientRepositoryEloquent extends BaseRepository implements ClientRepository {
 
@@ -15,5 +16,9 @@ class ClientRepositoryEloquent extends BaseRepository implements ClientRepositor
      */
     public function model() {
         return Client::class;
+    }
+
+    public function presenter() {
+        return ClientPresenter::class;
     }
 }

@@ -5,9 +5,12 @@ namespace SdcProject\Http\Controllers;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 use SdcProject\Http\Requests;
+use SdcProject\Presenters\ProjectPresenter;
 use SdcProject\Repositories\ProjectRepository;
 use SdcProject\Services\ProjectService;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 class ProjectController extends Controller {
@@ -30,10 +33,7 @@ class ProjectController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        return $this->projectRepository->with([
-            'owner',
-            'client'
-        ])->all();
+        return $this->projectRepository->findWhere(['owner_id' => Authorizer::getResourceOwnerId()]);
     }
 
 
@@ -55,6 +55,9 @@ class ProjectController extends Controller {
      */
     public function storeNewMember(Request $request, $idProject) {
         try {
+            //            if (!$this->checkProjectPermissions($id)) {
+            //                return ['error' => 'Access forbidden!'];
+            //            }
             return $this->projectService->addMember($idProject, $request->all());
         } catch (ModelNotFoundException $ex) {
             return [
@@ -77,11 +80,15 @@ class ProjectController extends Controller {
      */
     public function show($id) {
         try {
-            return $this->projectRepository->with([
-                'owner',
-                'client',
-                'projectTasks'
-            ])->find($id);
+            //            if (!$this->checkProjectPermissions($id)) {
+            //                return ['error' => 'Access forbidden!'];
+            //            }
+            return $this->projectRepository->find($id);
+        } catch (NotFoundHttpException $ex) {
+            return [
+                'error' => true,
+                'message' => $ex->getMessage()
+            ];
         } catch (ModelNotFoundException $ex) {
             return [
                 'error' => true,
@@ -97,7 +104,10 @@ class ProjectController extends Controller {
      */
     public function showMembers($id) {
         try {
-            return $this->projectService->showMembers($id);
+            //            if (!$this->checkProjectPermissions($id)) {
+            //                return ['error' => 'Access forbidden!'];
+            //            }
+            return $this->projectService->showMembers($id);//showMembers($id);
         } catch (ModelNotFoundException $ex) {
             return [
                 'error' => true,
@@ -116,6 +126,9 @@ class ProjectController extends Controller {
      */
     public function update(Request $request, $id) {
         try {
+            if (!$this->checkProjectOwner($id)) {
+                return ['error' => 'Access forbidden!'];
+            }
             return $this->projectService->update($request->all(), $id);
         } catch (ModelNotFoundException $ex) {
             return [
@@ -133,6 +146,9 @@ class ProjectController extends Controller {
      */
     public function destroy($id) {
         try {
+            if (!$this->checkProjectPermissions($id)) {
+                return ['error' => 'Access forbidden!'];
+            }
             return $this->projectRepository->delete($id);
         } catch (ModelNotFoundException $ex) {
             return [
@@ -145,6 +161,9 @@ class ProjectController extends Controller {
 
     public function destroyMember($idProject, $idMember) {
         try {
+            if (!$this->checkProjectPermissions($idProject)) {
+                return ['error' => 'Access forbidden!'];
+            }
             return $this->projectService->removeMember($idProject, $idMember);
         } catch (ModelNotFoundException $ex) {
             return [
@@ -167,4 +186,19 @@ class ProjectController extends Controller {
         }
 
     }
+
+
+    private function checkProjectOwner($projectId) {
+        return $this->projectService->isOwner($projectId, Authorizer::getResourceOwnerId());
+    }
+
+    private function checkProjectMember($projectId) {
+        return $this->projectService->isMember($projectId, Authorizer::getResourceOwnerId());
+    }
+
+    private function checkProjectPermissions($projectId) {
+        return $this->checkProjectMember($projectId) || $this->checkProjectOwner($projectId);
+    }
+
+
 }

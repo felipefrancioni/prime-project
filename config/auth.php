@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'model' => SdcProject\User::class,
+    'model' => SdcProject\Entities\User::class,
 
     /*
     |--------------------------------------------------------------------------

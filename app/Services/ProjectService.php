@@ -9,9 +9,15 @@
 namespace SdcProject\Services;
 
 
+use League\Fractal\Manager;
+use Prettus\Repository\Presenter\FractalPresenter;
 use Prettus\Validator\Exceptions\ValidatorException;
+use SdcProject\Presenters\ProjectMembersPresenter;
+use SdcProject\Presenters\ProjectPresenter;
+use SdcProject\Presenters\UserPresenter;
 use SdcProject\Repositories\ProjectMemberRepository;
 use SdcProject\Repositories\ProjectRepository;
+use SdcProject\Transformers\ProjectMembersTransformer;
 use SdcProject\Validators\ProjectValidator;
 
 class ProjectService {
@@ -55,28 +61,29 @@ class ProjectService {
         }
     }
 
-    public function showMembers($idProject) {
-        $project = $this->projectRepository->find($idProject);
-        return $project->projectMembers()->get([
-            'id',
-            'name',
-            'email'
-        ]);
+    public function showMembers($projectId) {
+        $project = $this->projectRepository->skipPresenter()->find($projectId);
+        return $project->projectMembers()->get();
     }
 
     public function addMember($idProject, array $data) {
-        $project = $this->projectRepository->find($idProject);
+        $project = $this->projectRepository->skipPresenter()->find($idProject);
         return $project->projectMembers()->attach($data);
     }
 
     public function removeMember($idProject, $idMember) {
-        $project = $this->projectRepository->find($idProject);
+        $project = $this->projectRepository->skipPresenter()->find($idProject);
         return $project->projectMembers()->detach($idMember);
     }
 
     public function isMember($idProject, $idMember) {
-        $project = $this->projectRepository->find($idProject);
+        $project = $this->projectRepository->skipPresenter()->find($idProject);
         return $project->projectMembers()->find($idMember);
+    }
+
+    public function isOwner($projectId, $userId) {
+        $project = $this->projectRepository->skipPresenter()->find($projectId);
+        return $project->owner()->find($userId);
     }
 
 

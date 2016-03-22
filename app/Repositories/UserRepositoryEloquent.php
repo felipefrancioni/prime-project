@@ -4,10 +4,10 @@ namespace SdcProject\Repositories;
 
 
 use Prettus\Repository\Eloquent\BaseRepository;
-use SdcProject\Entities\Project;
-use SdcProject\Presenters\ProjectPresenter;
+use SdcProject\Entities\User;
+use SdcProject\Presenters\UserPresenter;
 
-class ProjectRepositoryEloquent extends BaseRepository implements ProjectRepository {
+class UserRepositoryEloquent extends BaseRepository implements UserRepository {
 
     /**
      * Specify Model class name
@@ -15,10 +15,10 @@ class ProjectRepositoryEloquent extends BaseRepository implements ProjectReposit
      * @return string
      */
     public function model() {
-        return Project::class;
+        return User::class;
     }
 
     public function presenter() {
-        return ProjectPresenter::class;
+        return UserPresenter::class;
     }
 }

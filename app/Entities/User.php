@@ -31,18 +31,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'password'
     ];
 
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-        'pivot'
-    ];
+    //    protected $hidden = [
+    //        'password',
+    //        'remember_token',
+    //        'pivot'
+    //    ];
 
-    public function projects() {
-        return $this->hasMany(Project::class);
-    }
+
 }

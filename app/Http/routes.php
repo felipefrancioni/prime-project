@@ -1,39 +1,46 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the controller to call when that URI is requested.
-|
-*/
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('client', 'ClientController@index');
-Route::post('client', 'ClientController@store');
-Route::get('client/{id}', 'ClientController@show');
-Route::put('client/{id}', 'ClientController@update');
-Route::delete('client/{id}', 'ClientController@destroy');
+Route::post('oauth/access_token', function () {
+    return Response::jSon(Authorizer::issueAccessToken());
+});
 
-Route::get('project', 'ProjectController@index');
-Route::post('project', 'ProjectController@store');
-Route::get('project/{id}', 'ProjectController@show');
-Route::put('project/{id}', 'ProjectController@update');
-Route::delete('project/{id}', 'ProjectController@destroy');
+Route::group(['middleware' => 'oauth'], function () {
+    Route::resource('client', 'ClientController', [
+        'except' => [
+            'create',
+            'edit'
+        ]
+    ]);
 
-Route::post('project/{id}/member', 'ProjectController@storeNewMember');
-Route::delete('project/{idProject}/member/{idMember}', 'ProjectController@destroyMember');
-Route::get('project/{id}/members', 'ProjectController@showMembers');
-Route::get('project/{idProject}/member/{idMember}', 'ProjectController@isMember');
+    Route::resource('project', 'ProjectController', [
+        'except' => [
+            'create',
+            'edit'
+        ]
+    ]);
 
-Route::get('project/{idProject}/tasks', 'ProjectTaskController@index');
-Route::post('project/{idProject}/task', 'ProjectTaskController@store');
-Route::get('project/{idProject}/task/{idTask}', 'ProjectTaskController@show');
-Route::put('project/{idProject}/task/{idTask}', 'ProjectTaskController@update');
-Route::delete('project/{idProject}/task/{idTask}', 'ProjectTaskController@destroy');
+    //    Route::group(['middleware' => 'CheckProjectOwner'], function () {
+    //
+    //    });
+
+    Route::group(['prefix' => 'project'], function () {
+        Route::post('{id}/member', 'ProjectController@storeNewMember');
+        Route::delete('{idProject}/member/{idMember}', 'ProjectController@destroyMember');
+        Route::get('{id}/members', 'ProjectController@showMembers');
+        Route::get('{idProject}/member/{idMember}', 'ProjectController@isMember');
+
+        Route::get('{idProject}/tasks', 'ProjectTaskController@index');
+        Route::post('{idProject}/task', 'ProjectTaskController@store');
+        Route::get('{idProject}/task/{idTask}', 'ProjectTaskController@show');
+        Route::put('{idProject}/task/{idTask}', 'ProjectTaskController@update');
+        Route::delete('{idProject}/task/{idTask}', 'ProjectTaskController@destroy');
+    });
+
+});
+
+

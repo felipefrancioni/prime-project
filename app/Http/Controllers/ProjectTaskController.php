@@ -35,14 +35,7 @@ class ProjectTaskController extends Controller {
      */
     public function index($projectId) {
         try {
-            $project = $this->projectRepository->find($projectId);
-            return $project->projectTasks()->get([
-                'id',
-                'name',
-                'start_date',
-                'due_date',
-                'status'
-            ]);
+            return $this->projectTaskRepository->findWhere(['project_id' => $projectId]);
         } catch (ModelNotFoundException $ex) {
             return [
                 'error' => true,
