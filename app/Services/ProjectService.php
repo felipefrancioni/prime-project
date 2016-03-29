@@ -62,8 +62,12 @@ class ProjectService {
     }
 
     public function showMembers($projectId) {
-        $project = $this->projectRepository->skipPresenter()->find($projectId);
-        return $project->projectMembers()->get();
+        $projectRepo = $this->projectMemberRepository->findWhere(['project_id'=>$projectId]);
+        dd($projectRepo);
+        die;
+
+        //$project = $this->projectRepository->skipPresenter()->find($projectId);
+        //return $project->projectMembers()->get();
     }
 
     public function addMember($idProject, array $data) {
