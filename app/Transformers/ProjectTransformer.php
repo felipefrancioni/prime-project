@@ -32,8 +32,9 @@ class ProjectTransformer extends TransformerAbstract {
         return $this->item($project->client, new ClientTransformer());
     }
 
-    public function includeProjectMembers(Project $project) {
-        return $this->collection($project->projectMembers, new ProjectMembersTransformer());
+    public function includeMembers(Project $project)
+    {
+        return $this->collection($project->members, new ProjectMemberTransformer());
     }
 
 }
