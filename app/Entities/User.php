@@ -30,12 +30,4 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'email',
         'password'
     ];
-
-    //    protected $hidden = [
-    //        'password',
-    //        'remember_token',
-    //        'pivot'
-    //    ];
-
-
 }

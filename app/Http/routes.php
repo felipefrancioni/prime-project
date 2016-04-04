@@ -29,16 +29,16 @@ Route::group(['middleware' => 'oauth'], function () {
     //    });
 
     Route::group(['prefix' => 'project'], function () {
-        Route::post('{id}/member', 'ProjectController@storeNewMember');
-        Route::delete('{idProject}/member/{idMember}', 'ProjectController@destroyMember');
-        Route::get('{id}/members', 'ProjectController@showMembers');
-        Route::get('{idProject}/member/{idMember}', 'ProjectController@isMember');
+        Route::post('{projectId}/member', 'ProjectController@storeNewMember');
+        Route::delete('{projectId}/member/{idMember}', 'ProjectController@destroyMember');
+        Route::get('{projectId}/members', 'ProjectController@showMembers'); //ok
+        Route::get('{projectId}/member/{idMember}', 'ProjectController@isMember'); //ok
 
-        Route::get('{idProject}/tasks', 'ProjectTaskController@index');
-        Route::post('{idProject}/task', 'ProjectTaskController@store');
-        Route::get('{idProject}/task/{idTask}', 'ProjectTaskController@show');
-        Route::put('{idProject}/task/{idTask}', 'ProjectTaskController@update');
-        Route::delete('{idProject}/task/{idTask}', 'ProjectTaskController@destroy');
+        Route::get('{projectId}/tasks', 'ProjectTaskController@index');
+        Route::post('{projectId}/task', 'ProjectTaskController@store');
+        Route::get('{projectId}/task/{idTask}', 'ProjectTaskController@show');
+        Route::put('{projectId}/task/{idTask}', 'ProjectTaskController@update');
+        Route::delete('{projectId}/task/{idTask}', 'ProjectTaskController@destroy');
     });
 
 });

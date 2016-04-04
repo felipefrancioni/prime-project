@@ -7,7 +7,6 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 use SdcProject\Http\Requests;
-use SdcProject\Presenters\ProjectPresenter;
 use SdcProject\Repositories\ProjectRepository;
 use SdcProject\Services\ProjectService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -50,15 +49,15 @@ class ProjectController extends Controller {
 
     /**
      * @param Request $request
-     * @param $idProject
+     * @param $projectId
      * @return array
      */
-    public function storeNewMember(Request $request, $idProject) {
+    public function storeNewMember(Request $request, $projectId) {
         try {
             //            if (!$this->checkProjectPermissions($id)) {
             //                return ['error' => 'Access forbidden!'];
             //            }
-            return $this->projectService->addMember($idProject, $request->all());
+            return $this->projectService->addMember($projectId, $request->all());
         } catch (ModelNotFoundException $ex) {
             return [
                 'error' => true,
@@ -126,9 +125,9 @@ class ProjectController extends Controller {
      */
     public function update(Request $request, $id) {
         try {
-            if (!$this->checkProjectOwner($id)) {
-                return ['error' => 'Access forbidden!'];
-            }
+            //            if (!$this->checkProjectOwner($id)) {
+            //                return ['error' => 'Access forbidden!'];
+            //            }
             return $this->projectService->update($request->all(), $id);
         } catch (ModelNotFoundException $ex) {
             return [
@@ -146,9 +145,9 @@ class ProjectController extends Controller {
      */
     public function destroy($id) {
         try {
-            if (!$this->checkProjectPermissions($id)) {
-                return ['error' => 'Access forbidden!'];
-            }
+            //            if (!$this->checkProjectPermissions($id)) {
+            //                return ['error' => 'Access forbidden!'];
+            //            }
             return $this->projectRepository->delete($id);
         } catch (ModelNotFoundException $ex) {
             return [
@@ -161,9 +160,9 @@ class ProjectController extends Controller {
 
     public function destroyMember($idProject, $idMember) {
         try {
-            if (!$this->checkProjectPermissions($idProject)) {
-                return ['error' => 'Access forbidden!'];
-            }
+            //            if (!$this->checkProjectPermissions($idProject)) {
+            //                return ['error' => 'Access forbidden!'];
+            //            }
             return $this->projectService->removeMember($idProject, $idMember);
         } catch (ModelNotFoundException $ex) {
             return [
@@ -177,7 +176,8 @@ class ProjectController extends Controller {
     public function isMember($idProject, $idMember) {
         try {
             $member = $this->projectService->isMember($idProject, $idMember);
-            return $member ? 'true' : 'false';
+            $isMember = $member ? 'true' : 'false';
+            return $isMember;
         } catch (ModelNotFoundException $ex) {
             return [
                 'error' => true,

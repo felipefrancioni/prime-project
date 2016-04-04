@@ -4,14 +4,14 @@ namespace SdcProject\Transformers;
 
 
 use League\Fractal\TransformerAbstract;
-use SdcProject\Entities\User;
+use SdcProject\Entities\ProjectMember;
 
 class ProjectMembersTransformer extends TransformerAbstract {
-    public function transform(User $user) {
+    public function transform(ProjectMember $member) {
         return [
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email
+            'id' => $member->User->id,
+            'name' => $member->User->name,
+            'email' => $member->User->email
         ];
     }
 }
