@@ -8,33 +8,40 @@
 
 namespace SdcProject\Services;
 
-
-use League\Fractal\Manager;
-use Prettus\Repository\Presenter\FractalPresenter;
+use Illuminate\Filesystem\Filesystem;
 use Prettus\Validator\Exceptions\ValidatorException;
-use SdcProject\Presenters\ProjectMembersPresenter;
-use SdcProject\Presenters\ProjectPresenter;
-use SdcProject\Presenters\UserPresenter;
 use SdcProject\Repositories\ProjectMemberRepository;
 use SdcProject\Repositories\ProjectRepository;
-use SdcProject\Transformers\ProjectMembersTransformer;
 use SdcProject\Validators\ProjectValidator;
+use Illuminate\Contracts\Filesystem\Factory as Storage;
 
 class ProjectService {
 
     protected $projectRepository;
     protected $projectValidator;
     protected $projectMemberRepository;
+    /**
+     * @var Filesystem
+     */
+    private $fileSystem;
+    /**
+     * @var Storage
+     */
+    private $storage;
 
     /**
      * @param ProjectRepository $projectRepository
      * @param ProjectMemberRepository $projectMemberRepository
      * @param ProjectValidator $projectValidator
+     * @param Filesystem $fileSystem
+     * @param Storage $storage
      */
-    public function __construct(ProjectRepository $projectRepository, ProjectMemberRepository $projectMemberRepository, ProjectValidator $projectValidator) {
+    public function __construct(ProjectRepository $projectRepository, ProjectMemberRepository $projectMemberRepository, ProjectValidator $projectValidator, Filesystem $fileSystem, Storage $storage) {
         $this->projectRepository = $projectRepository;
         $this->projectValidator = $projectValidator;
         $this->projectMemberRepository = $projectMemberRepository;
+        $this->fileSystem = $fileSystem;
+        $this->storage = $storage;
     }
 
     public function create(array $data) {
@@ -85,5 +92,19 @@ class ProjectService {
         return $project->owner()->find($userId);
     }
 
+    public function createFile(array $data) {
+        $project = $this->projectRepository->skipPresenter()->find($data['project_id']);
+        $projectFile = $project->files()->create($data);
+        $this->storage->put($projectFile->id . '.' . $data['extension'], $this->fileSystem->get($data['file']));
+    }
+
+    public function removeFile($projectId, $fileId) {
+        $project = $this->projectRepository->skipPresenter()->find($projectId);
+        $file = $project->files()->find($fileId);
+        $project->files()->delete($fileId);
+        if ($file) {
+            $this->storage->delete($fileId . '.' . $file->extension);
+        }
+    }
 
 }
