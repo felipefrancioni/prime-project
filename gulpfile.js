@@ -53,6 +53,14 @@ gulp.task('copy-scripts', function () {
         .pipe(liveReload());
 });
 
+config.build_path_html = config.build_path + '/views';
+gulp.task('copy-html', function () {
+    gulp.src([
+        config.assets_path + '/js/views/**/*.html'
+    ]).pipe(gulp.dest(config.build_path_html))
+        .pipe(liveReload());
+});
+
 gulp.task('clean-build-folder', function () {
     clean.sync(config.build_path);
 });
