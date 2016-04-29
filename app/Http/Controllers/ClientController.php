@@ -9,7 +9,8 @@ use SdcProject\Http\Requests;
 use SdcProject\Repositories\ClientRepository;
 use SdcProject\Services\ClientService;
 
-class ClientController extends Controller {
+class ClientController extends Controller
+{
 
     private $clientRepository;
     private $clientService;
@@ -18,7 +19,8 @@ class ClientController extends Controller {
      * @param ClientRepository $clientRepository
      * @param ClientService $clientService
      */
-    public function __construct(ClientRepository $clientRepository, ClientService $clientService) {
+    public function __construct(ClientRepository $clientRepository, ClientService $clientService)
+    {
         $this->clientRepository = $clientRepository;
         $this->clientService = $clientService;
     }
@@ -28,7 +30,8 @@ class ClientController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
+    public function index()
+    {
         return $this->clientRepository->all();
     }
 
@@ -38,7 +41,8 @@ class ClientController extends Controller {
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         return $this->clientService->create($request->all());
     }
 
@@ -48,7 +52,8 @@ class ClientController extends Controller {
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id) {
+    public function show($id)
+    {
         try {
             return $this->clientRepository->find($id);
         } catch (ModelNotFoundException $ex) {
@@ -67,7 +72,8 @@ class ClientController extends Controller {
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         try {
             return $this->clientService->update($request->all(), $id);
         } catch (ModelNotFoundException $ex) {
@@ -84,9 +90,10 @@ class ClientController extends Controller {
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) {
+    public function destroy($id)
+    {
         try {
-            $this->clientRepository->find($id)->delete();
+            $this->clientRepository->skipPresenter()->find($id)->delete();
         } catch (ModelNotFoundException $ex) {
             return [
                 'error' => true,
