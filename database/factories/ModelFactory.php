@@ -53,6 +53,14 @@ $factory->define(SdcProject\Entities\ProjectTask::class, function (Faker\Generat
     ];
 });
 
+$factory->define(SdcProject\Entities\ProjectNote::class, function (Faker\Generator $faker) {
+    return [
+        'title' => $faker->word,
+        'project_id' => rand(1, 10),
+        'note' => $faker->word
+    ];
+});
+
 
 $factory->define(SdcProject\Entities\ProjectMember::class, function (Faker\Generator $faker) {
     return [

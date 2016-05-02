@@ -16,7 +16,20 @@ app.provider('appConfig', function () {
 })
 
 
-app.config(['$routeProvider', 'OAuthProvider', 'OAuthTokenProvider', 'appConfigProvider', function ($routeProvider, OAuthProvider, OAuthTokenProvider, appConfigProvider) {
+app.config(['$routeProvider', '$httpProvider', 'OAuthProvider', 'OAuthTokenProvider', 'appConfigProvider', function ($routeProvider, $httpProvider, OAuthProvider, OAuthTokenProvider, appConfigProvider) {
+    $httpProvider.defaults.transformResponse = function (data, headers) {
+        var headerGetter = headers();
+
+        if (headerGetter['content-type'] == 'application/json' || headerGetter['content-type'] == 'text/json') {
+            var dataJson = JSON.parse(data);
+            if (dataJson.hasOwnProperty('data')) {
+                return dataJson.data;
+            }
+            return dataJson;
+        }
+        return data;
+    };
+
     $routeProvider
         .when('/login', {
             templateUrl: 'build/views/login.html',
@@ -41,8 +54,28 @@ app.config(['$routeProvider', 'OAuthProvider', 'OAuthTokenProvider', 'appConfigP
         .when('/clients/:id/remove', {
             templateUrl: 'build/views/client/remove.html',
             controller: 'ClientRemoveController'
+        })
+        .when('/projects/:id/notes', {
+            templateUrl: 'build/views/project-note/list.html',
+            controller: 'ProjectNoteListController'
+        })
+        .when('/projects/:id/notes/:noteId/show', {
+            templateUrl: 'build/views/project-note/show.html',
+            controller: 'ProjectNoteShowController'
+        })
+        .when('/projects/:id/notes/new', {
+            templateUrl: 'build/views/project-note/new.html',
+            controller: 'ProjectNoteNewController'
+        })
+        .when('/projects/:id/notes/:noteId/edit', {
+            templateUrl: 'build/views/project-note/edit.html',
+            controller: 'ProjectNoteEditController'
+        })
+        .when('/projects/:id/notes/:noteId/remove', {
+            templateUrl: 'build/views/project-note/remove.html',
+            controller: 'ProjectNoteRemoveController'
         });
-    ;
+
 
     OAuthProvider.configure({
         baseUrl: appConfigProvider.config.baseUrl,

@@ -4,7 +4,8 @@ namespace SdcProject\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Project extends Model {
+class Project extends Model
+{
     protected $fillable = [
         'owner_id',
         'client_id',
@@ -15,23 +16,33 @@ class Project extends Model {
         'due_date'
     ];
 
-    public function client() {
+    public function client()
+    {
         return $this->belongsTo(Client::class);
     }
 
-    public function owner() {
+    public function owner()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function projectTasks() {
+    public function projectTasks()
+    {
         return $this->hasMany(ProjectTask::class);
     }
 
-    public function projectMembers() {
+    public function projectNotes()
+    {
+        return $this->hasMany(ProjectNote::class);
+    }
+
+    public function projectMembers()
+    {
         return $this->belongsToMany(User::class, 'project_members');
     }
 
-    public function files() {
+    public function files()
+    {
         return $this->hasMany(ProjectFile::class);
     }
 

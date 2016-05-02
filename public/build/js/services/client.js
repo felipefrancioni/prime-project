@@ -4,7 +4,6 @@ angular.module('app.services').service('Client', ['$resource', 'appConfig',
             appConfig.baseUrl + '/client/:id',
             {id: '@id'},
             {
-                query: {isArray: false},
                 update: {method: 'PUT'}
             }
         );
