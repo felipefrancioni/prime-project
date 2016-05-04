@@ -1,39 +1,41 @@
 <?php
 
-namespace SdcProject\Transformers;
+    namespace SdcProject\Transformers;
 
-use League\Fractal\TransformerAbstract;
-use SdcProject\Entities\Project;
+    use League\Fractal\TransformerAbstract;
+    use SdcProject\Entities\Project;
 
-class ProjectTransformer extends TransformerAbstract {
+    class ProjectTransformer extends TransformerAbstract {
 
-    protected $availableIncludes = [
-        'owner',
-        'client',
-        'projectMembers'
-    ];
-
-    public function transform(Project $project) {
-        return [
-            'id' => $project->id,
-            'name' => $project->name,
-            'description' => $project->description,
-            'progress' => $project->progress,
-            'status' => $project->status,
-            'due_date' => $project->due_date
+        protected $availableIncludes = [
+            'owner',
+            'client',
+            'projectMembers'
         ];
-    }
 
-    public function includeOwner(Project $project) {
-        return $this->item($project->owner, new UserTransformer());
-    }
+        public function transform(Project $project) {
+            return [
+                'id' => $project->id,
+                'name' => $project->name,
+                'client' => $project->client()->find($project->client_id),
+                'client_id' => $project->client_id,
+                'description' => $project->description,
+                'progress' => $project->progress,
+                'status' => $project->status,
+                'due_date' => $project->due_date
+            ];
+        }
 
-    public function includeClient(Project $project) {
-        return $this->item($project->client, new ClientTransformer());
-    }
+        public function includeOwner(Project $project) {
+            return $this->item($project->owner, new UserTransformer());
+        }
 
-    public function includeMembers(Project $project) {
-        return $this->collection($project->projectMembers, new ProjectMembersTransformer());
-    }
+        public function includeClient(Project $project) {
+            return $this->item($project->client, new ClientTransformer());
+        }
 
-}
+        public function includeMembers(Project $project) {
+            return $this->collection($project->projectMembers, new ProjectMembersTransformer());
+        }
+
+    }

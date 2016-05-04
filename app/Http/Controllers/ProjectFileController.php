@@ -1,77 +1,81 @@
 <?php
 
-namespace SdcProject\Http\Controllers;
+    namespace SdcProject\Http\Controllers;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
-use SdcProject\Http\Requests;
-use SdcProject\Services\ProjectService;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+    use Illuminate\Database\Eloquent\ModelNotFoundException;
+    use Illuminate\Http\Request;
+    use SdcProject\Http\Requests;
+    use SdcProject\Repositories\ProjectFileRepository;
+    use SdcProject\Services\ProjectFileService;
+    use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
-class ProjectFileController extends Controller {
+    class ProjectFileController extends Controller {
 
-    private $projectService;
+        private $projectFileService;
+        private $projectFileRepository;
 
-    /**
-     * @param ProjectService $projectService
-     */
-    public function __construct(ProjectService $projectService) {
-        $this->projectService = $projectService;
-    }
+        /**
+         * @param ProjectFileService $projectFileService
+         * @param ProjectFileRepository $projectFileRepository
+         */
+        public function __construct(ProjectFileService $projectFileService, ProjectFileRepository $projectFileRepository) {
+            $this->projectFileService = $projectFileService;
+            $this->projectFileRepository = $projectFileRepository;
+        }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request) {
-        try {
+        public function index($projectId) {
+            return $this->projectFileRepository->findWhere(['project_id' => $projectId]);
+        }
+
+        public function store(Request $request) {
             $file = $request->file('file');
             $extension = $file->getClientOriginalExtension();
+
             $data['file'] = $file;
-            $data['name'] = $request->name;
-            $data['description'] = $request->description;
             $data['extension'] = $extension;
+            $data['name'] = $request->name;
             $data['project_id'] = $request->project_id;
-            $this->projectService->createFile($data);
-        } catch (NotFoundHttpException $ex) {
+            $data['description'] = $request->description;
+
+            return $this->projectFileService->create($data);
+        }
+
+
+        public function showFile($fileId) {
+            if (!$this->projectFileService->checkProjectPermissions($fileId)) {
+                return ['error' => 'Access forbidden!'];
+            }
+            $filePath = $this->projectFileService->getFilePath($fileId);
+            $fileContent = file_get_contents($filePath);
+            $file64 = base64_encode($fileContent);
             return [
-                'error' => true,
-                'message' => $ex->getMessage()
-            ];
-        } catch (ModelNotFoundException $ex) {
-            return [
-                'error' => true,
-                'message' => $ex->getMessage()
+                'file' => $file64,
+                'size' => filesize($filePath),
+                'name' => $this->projectFileService->getFileName($fileId)
             ];
         }
 
-    }
+        public function show($fileId) {
+            if (!$this->projectFileService->checkProjectPermissions($fileId)) {
+                return ['error' => 'Access forbidden!'];
+            }
+            return $this->projectFileRepository->find($fileId);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param $projectId
-     * @param $fileId
-     * @return array
-     */
-    public function destroy($projectId, $fileId) {
-        try {
-            $this->projectService->removeFile($projectId, $fileId);
-        } catch (NotFoundHttpException $ex) {
-            return [
-                'error' => true,
-                'message' => $ex->getMessage()
-            ];
-        } catch (ModelNotFoundException $ex) {
-            return [
-                'error' => true,
-                'message' => $ex->getMessage()
-            ];
+        public function update(Request $request, $fileId) {
+            if (!$this->projectFileService->checkProjectOwner($fileId)) {
+                return ['error' => 'Access forbidden!'];
+            }
+            return $this->projectFileService->update($request->all(), $fileId);
+        }
+
+        public function destroy($fileId) {
+            if (!$this->projectFileService->checkProjectOwner($fileId)) {
+                return ['error' => 'Access forbidden!'];
+            }
+            return $this->projectFileService->delete($fileId);
+
         }
 
     }
-
-}

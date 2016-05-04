@@ -1,7 +1,7 @@
 angular.module('app.controllers')
     .controller('ProjectNoteEditController', ['$scope', '$location', '$routeParams', 'ProjectNote', function ($scope, $location, $routeParams, ProjectNote) {
         $scope.projectNote = ProjectNote.get({
-            id: $routeParams.id,
+            projectId: $routeParams.projectId,
             noteId: $routeParams.noteId
         });
 
@@ -11,7 +11,7 @@ angular.module('app.controllers')
                     projectId: $scope.projectNote.project_id,
                     noteId: $scope.projectNote.id
                 }, $scope.projectNote, function () {
-                    $location.path('/projects/' + $routeParams.id + '/notes');
+                    $location.path('/projects/' + $routeParams.projectId + '/notes');
                 });
             }
         }

@@ -1,24 +1,27 @@
 <?php
 
-namespace SdcProject\Entities;
+    namespace SdcProject\Entities;
 
-use Illuminate\Database\Eloquent\Model;
-use Prettus\Repository\Contracts\Transformable;
-use Prettus\Repository\Traits\TransformableTrait;
+    use Illuminate\Database\Eloquent\Model;
+    use Prettus\Repository\Contracts\Transformable;
+    use Prettus\Repository\Traits\TransformableTrait;
 
-class ProjectFile extends Model implements Transformable {
+    class ProjectFile extends Model implements Transformable {
 
-    use TransformableTrait;
+        use TransformableTrait;
 
-    protected $fillable = [
-        'name',
-        'description',
-        'extension'
-    ];
+        protected $fillable = [
+            'name',
+            'description',
+            'extension'
+        ];
 
-    public function project() {
-        return $this->belongsTo(Project::class);
+        public function project() {
+            return $this->belongsTo(Project::class);
+        }
+
+        public function getFileName() {
+            return $this->id . '.' . $this->extension;
+        }
+
     }
-
-
-}

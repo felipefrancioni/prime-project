@@ -1,9 +1,9 @@
 angular.module('app.services').service('ProjectNote', ['$resource', 'appConfig',
     function ($resource, appConfig) {
         return $resource(
-            appConfig.baseUrl + '/project/:id/note/:noteId',
+            appConfig.baseUrl + '/project/:projectId/note/:noteId',
             {
-                id: '@id',
+                projectId: '@projectId',
                 noteId: '@noteId'
             },
             {
