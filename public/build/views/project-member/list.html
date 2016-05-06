@@ -2,12 +2,18 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Nova tarefa</div>
+                <div class="panel-heading">Novo membro</div>
                 <div class="panel-body">
                     <form class="form-inline" name="form" role="form" method="POST" ng-submit="save()">
                         <div class="form-group">
-                            <label class="control-label">Name</label>
-                            <input type="text" class="form-control" name="name" ng-model="projectMember.name" required>
+                            <label control-label">Name</label>
+                            <input name="user_id" class="form-control" ng-model="projectMember.userSelected"
+                                       typeahead="projectMember as projectMember.name for projectMember in getUsers($viewValue) | limitTo: 10"
+                                       typeahead-input-formatter="formatName($model)"
+                                       typeahead-on-select="selectUser($item)"
+                                       typeahead-editable="false"
+                                       required/>
+
                         </div>
                         <button type="submit" class="btn btn-primary">Salvar</button>
                     </form>
@@ -24,10 +30,9 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="projectMember in projectMembers">
-                            <td>{{projectMember.name}}</td>
+                            <td>{{projectMember.user.name}}</td>
                             <td>
-                                <a ng-href="#/project/{{projectMember.project_id}}/member/{{projectMember.id}}/edit">Edit</a> |
-                                <a ng-href="#/project/{{projectMember.project_id}}/member/{{projectMember.id}}/remove">Remove</a>
+                                <a ng-href="#/project/{{projectMember.project_id}}/member/{{projectMember.user.user_id}}/remove">Remove</a>
                             </td>
                         </tr>
                         </tbody>

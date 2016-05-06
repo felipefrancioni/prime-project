@@ -55,11 +55,16 @@
 
 
         public function show($projectId, $memberId) {
-            return $this->projectMemberRepository->find($memberId);
+            $result = $this->projectMemberRepository->findWhere(['project_id' => $projectId, 'user_id' => $memberId]);
+            if(isset($result['data']) && count($result['data']) == 1) {
+                $result = [
+                    'data' => $result['data'][0]
+                ];
+            }
+            return $result;
         }
 
-        
         public function destroy($projectId, $memberId) {
-            $this->projectMemberService->delete($memberId);
+            $this->projectMemberService->delete($projectId, $memberId);
         }
     }

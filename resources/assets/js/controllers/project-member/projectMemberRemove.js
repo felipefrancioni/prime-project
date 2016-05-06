@@ -1,17 +1,17 @@
 angular.module('app.controllers')
-    .controller('ProjectTaskRemoveController', ['$scope', '$location', '$routeParams', 'ProjectTask', function ($scope, $location, $routeParams, ProjectTask) {
-        $scope.projectTask = ProjectTask.get({
+    .controller('ProjectMemberRemoveController', ['$scope', '$location', '$routeParams', 'ProjectMember', function ($scope, $location, $routeParams, ProjectMember) {
+        $scope.projectMember = ProjectMember.get({
             projectId: $routeParams.projectId,
-            taskId: $routeParams.taskId
+            memberId: $routeParams.memberId
         });
 
         $scope.remove = function () {
-            $scope.projectTask.$delete({
-                    projectId: $scope.projectTask.project_id,
-                    taskId: $scope.projectTask.id
+            $scope.projectMember.$delete({
+                    projectId: $scope.projectMember.project_id,
+                    memberId: $scope.projectMember.user.user_id
                 }
             ).then(function () {
-                $location.path('/project/' + $routeParams.projectId + '/tasks');
+                $location.path('/project/' + $routeParams.projectId + '/members');
             });
         }
     }]);

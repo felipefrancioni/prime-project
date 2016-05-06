@@ -11,6 +11,7 @@ namespace SdcProject\Services;
 use Illuminate\Database\QueryException;
 use Prettus\Validator\Exceptions\ValidatorException;
 use SdcProject\Repositories\ProjectMemberRepository;
+use SdcProject\Repositories\ProjectRepository;
 use SdcProject\Validators\ProjectMemberValidator;
 
 
@@ -18,6 +19,7 @@ class ProjectMemberService
 {
 
     protected $projectMemberRepository;
+    protected $projectRepository;
     protected $projectMemberValidator;
 
 
@@ -25,11 +27,15 @@ class ProjectMemberService
      * ProjectMemberService constructor.
      * @param ProjectMemberRepository $projectMemberRepository
      * @param ProjectMemberValidator $projectMemberValidator
+     * @param ProjectRepository $projectRepository
      */
-    public function __construct(ProjectMemberRepository $projectMemberRepository, ProjectMemberValidator $projectMemberValidator)
+    public function __construct(ProjectMemberRepository $projectMemberRepository,
+                                ProjectMemberValidator $projectMemberValidator,
+                                ProjectRepository $projectRepository)
     {
         $this->projectMemberRepository = $projectMemberRepository;
         $this->projectMemberValidator = $projectMemberValidator;
+        $this->projectRepository = $projectRepository;
     }
 
     public function create(array $data)
@@ -51,9 +57,9 @@ class ProjectMemberService
     }
 
 
-    public function delete($id)
+    public function delete($projectId, $memberId)
     {
-        $projectMember = $this->projectMemberRepository->skipPresenter()->find($id);
-        return $projectMember->delete();
+        $project = $this->projectRepository->skipPresenter()->find($projectId);
+        return $project->projectMembers()->detach($memberId);
     }
 }

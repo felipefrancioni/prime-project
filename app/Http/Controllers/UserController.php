@@ -35,5 +35,10 @@ class UserController extends Controller
         $this->authorizer = $authorizer;
     }
 
+    public function index()
+    {
+        return $this->userRepository->all();
+    }
+
 
 }

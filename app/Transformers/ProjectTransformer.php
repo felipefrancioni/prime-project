@@ -37,7 +37,7 @@
         }
 
         public function includeMembers(Project $project) {
-            return $this->collection($project->projectMembers, new ProjectMembersTransformer());
+            return $this->collection($project->projectMembers, new MemberTransformer());
         }
 
     }

@@ -34,10 +34,10 @@
         ]);
 
         Route::group(['middleware' => 'check-project-permission', 'prefix' => 'project'], function () {
-            Route::post('{projectId}/member', 'ProjectController@storeNewMember');//ok
-            Route::delete('{projectId}/member/{idMember}', 'ProjectController@destroyMember');//ok
-            Route::get('{projectId}/member', 'ProjectController@showMembers'); //ok
-            Route::get('{projectId}/member/{idMember}', 'ProjectController@isMember'); //ok
+            Route::get('{projectId}/member', 'ProjectMemberController@index');
+            Route::post('{projectId}/member', 'ProjectMemberController@store');//ok
+            Route::delete('{projectId}/member/{idMember}', 'ProjectMemberController@destroy');//ok
+            Route::get('{projectId}/member/{idMember}', 'ProjectMemberController@show'); //ok
 
             Route::get('{projectId}/task', 'ProjectTaskController@index'); //ok
             Route::post('{projectId}/task', 'ProjectTaskController@store'); //ok
