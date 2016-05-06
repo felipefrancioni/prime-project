@@ -24,4 +24,9 @@ class ProjectMemberRepositoryEloquent extends BaseRepository implements ProjectM
         return ProjectMembersPresenter::class;
     }
 
+    public function boot()
+    {
+        $this->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
+    }
+
 }

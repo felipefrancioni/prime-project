@@ -8,11 +8,18 @@
     use SdcProject\Entities\User;
 
     class ProjectMembersTransformer extends TransformerAbstract {
-        public function transform(User $member) {
+
+        protected $defaultIncludes = [
+            'user'
+        ];
+
+        public function transform(ProjectMember $member) {
             return [
-                'id' => $member->id,
-                'name' => $member->name,
-                'email' => $member->email
+                'project_id' => $member->project_id
             ];
+        }
+
+        public function includeUser(ProjectMember $projectMember) {
+            return $this->item($projectMember->member,new MemberTransformer());
         }
     }

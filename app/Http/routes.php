@@ -10,6 +10,15 @@
     });
 
     Route::group(['middleware' => 'oauth'], function () {
+
+        Route::resource('project.member', 'ProjectMemberController', [
+            'except' => [
+                'create',
+                'edit',
+                'update'
+            ]
+        ]);
+
         Route::resource('client', 'ClientController', [
             'except' => [
                 'create',
@@ -50,7 +59,8 @@
             Route::delete('{projectId}/file/{fileId}', 'ProjectFileController@destroy');//ok
         });
 
-        Route::resource('user/authenticated', 'UserController@authenticated');
+        Route::get('user/authenticated', 'UserController@authenticated');
+        Route::resource('user', 'UserController', ['except' => ['create', 'edit']]);
     });
 
 

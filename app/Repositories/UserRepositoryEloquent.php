@@ -9,6 +9,10 @@ use SdcProject\Presenters\UserPresenter;
 
 class UserRepositoryEloquent extends BaseRepository implements UserRepository {
 
+    protected $fieldSearchable = [
+        'name'
+    ];
+
     /**
      * Specify Model class name
      *
@@ -20,5 +24,10 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository {
 
     public function presenter() {
         return UserPresenter::class;
+    }
+
+    public function boot()
+    {
+        $this->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
     }
 }

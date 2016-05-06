@@ -19,7 +19,7 @@ angular.module('app.services', ['ngResource']);
 
 app.provider('appConfig', function () {
     var config = {
-        baseUrl: 'http://localhost:8000',
+        baseUrl: 'http://localhost:8888',
         project: {
             status: [
                 {value: 1, label: 'Não iniciado'},
@@ -125,6 +125,26 @@ app.config(['$routeProvider', '$httpProvider', 'OAuthProvider', 'OAuthTokenProvi
         .when('/project/:projectId/task/:taskId/remove', {
             templateUrl: 'build/views/project-task/remove.html',
             controller: 'ProjectTaskRemoveController'
+        })
+        .when('/project/:projectId/members', {
+            templateUrl: 'build/views/project-member/list.html',
+            controller: 'ProjectMemberListController'
+        })
+        .when('/project/:projectId/member/:memberId/show', {
+            templateUrl: 'build/views/project-member/show.html',
+            controller: 'ProjectMemberShowController'
+        })
+        .when('/project/:projectId/member/new', {
+            templateUrl: 'build/views/project-member/new.html',
+            controller: 'ProjectMemberNewController'
+        })
+        .when('/project/:projectId/member/:memberId/edit', {
+            templateUrl: 'build/views/project-member/edit.html',
+            controller: 'ProjectMemberEditController'
+        })
+        .when('/project/:projectId/member/:memberId/remove', {
+            templateUrl: 'build/views/project-member/remove.html',
+            controller: 'ProjectMemberRemoveController'
         })
         .when('/projects', {
             templateUrl: 'build/views/project/list.html',
