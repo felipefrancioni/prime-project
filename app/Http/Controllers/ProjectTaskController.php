@@ -1,132 +1,73 @@
 <?php
 
-namespace SdcProject\Http\Controllers;
+    namespace SdcProject\Http\Controllers;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\QueryException;
-use Illuminate\Http\Request;
-use Prettus\Validator\Exceptions\ValidatorException;
-use SdcProject\Http\Requests;
-use SdcProject\Repositories\ProjectRepository;
-use SdcProject\Repositories\ProjectTaskRepository;
-use SdcProject\Services\ProjectTaskService;
+    use Illuminate\Database\Eloquent\ModelNotFoundException;
+    use Illuminate\Database\QueryException;
+    use Illuminate\Http\Request;
+    use Prettus\Validator\Exceptions\ValidatorException;
+    use SdcProject\Http\Requests;
+    use SdcProject\Repositories\ProjectRepository;
+    use SdcProject\Repositories\ProjectTaskRepository;
+    use SdcProject\Services\ProjectTaskService;
 
-class ProjectTaskController extends Controller {
-    private $projectTaskRepository;
-    private $projectTaskService;
-    private $projectRepository;
+    class ProjectTaskController extends Controller {
+        private $projectTaskRepository;
+        private $projectTaskService;
 
-    /**
-     * @param ProjectRepository $projectRepository
-     * @param ProjectTaskRepository $projectTaskRepository
-     * @param ProjectTaskService $projectTaskService
-     */
-    public function __construct(ProjectRepository $projectRepository, ProjectTaskRepository $projectTaskRepository, ProjectTaskService $projectTaskService) {
-        $this->projectTaskRepository = $projectTaskRepository;
-        $this->projectTaskService = $projectTaskService;
-        $this->projectRepository = $projectRepository;
-    }
+        /**
+         * @param ProjectTaskRepository $projectTaskRepository
+         * @param ProjectTaskService $projectTaskService
+         */
+        public function __construct(ProjectTaskRepository $projectTaskRepository, ProjectTaskService $projectTaskService) {
+            $this->projectTaskRepository = $projectTaskRepository;
+            $this->projectTaskService = $projectTaskService;
+        }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @param $projectId
-     * @return \Illuminate\Http\Response
-     */
-    public function index($projectId) {
-        try {
+        /**
+         * Display a listing of the resource.
+         *
+         * @param $projectId
+         * @return \Illuminate\Http\Response
+         */
+        public function index($projectId) {
             return $this->projectTaskRepository->findWhere(['project_id' => $projectId]);
-        } catch (ModelNotFoundException $ex) {
-            return [
-                'error' => true,
-                'message' => $ex->getMessage()
-            ];
+        }
+
+
+        /**
+         * @param Request $request
+         * @param $projectId
+         * @return array
+         */
+        public function store(Request $request, $projectId) {
+            $data = $request->all();
+            $data['project_id'] = $projectId;
+            return $this->projectTaskService->create($data);
+        }
+
+
+        public function show($projectId, $taskId) {
+            return $this->projectTaskRepository->find($taskId);
+        }
+
+
+        /**
+         * Update the specified resource in storage.
+         *
+         * @param  \Illuminate\Http\Request $request
+         * @param $projectId
+         * @param $taskId
+         * @return \Illuminate\Http\Response
+         */
+        public function update(Request $request, $projectId, $taskId) {
+            $data = $request->all();
+            $data['project_id'] = $projectId;
+            return $this->projectTaskService->update($data, $taskId);
+        }
+
+        
+        public function destroy($projectId, $taskId) {
+            $this->projectTaskService->delete($projectId, $taskId);
         }
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request) {
-        return $this->projectTaskService->create($request->all());
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param $projectId
-     * @param $taskId
-     * @return \Illuminate\Http\Response
-     * @internal param int $id
-     */
-    public function show($projectId, $taskId) {
-        try {
-            return $this->projectTaskRepository->findWhere([
-                'id' => $taskId,
-                'project_id' => $projectId
-            ]);
-        } catch (ModelNotFoundException $ex) {
-            return [
-                'error' => true,
-                'message' => $ex->getMessage()
-            ];
-        }
-    }
-
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param $projectId
-     * @param $taskId
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $projectId, $taskId) {
-        try {
-            return $this->projectTaskService->update($request->all(), $projectId, $taskId);
-        } catch (ValidatorException $e) {
-            return [
-                'error' => true,
-                'message' => $e->getMessageBag()
-            ];
-        } catch (\Exception $e) {
-            return [
-                'error' => true,
-                'message' => $e->getMessage()
-            ];
-        }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param $projectId
-     * @param $taskId
-     * @return array
-     * @throws \Exception
-     */
-    public function destroy($projectId, $taskId) {
-        try {
-            return $this->projectTaskService->delete($projectId, $taskId);
-        } catch (ModelNotFoundException $ex) {
-            return [
-                'error' => true,
-                'message' => $ex->getMessage()
-            ];
-        } catch (QueryException $ex2) {
-            return [
-                'error' => true,
-                'message' => $ex2->getMessage()
-            ];
-        } catch (\Exception $e) {
-            return [
-                'error' => true,
-                'message' => $e->getMessage()
-            ];
-        }
-    }
-}

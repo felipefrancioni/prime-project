@@ -18,12 +18,12 @@
                             <td>{{projectFile.name}}</td>
                             <td>{{projectFile.description | limitTo: 25}}...</td>
                             <td>
-                                <project-file-downloads file-id="{{projectFile.id}}"></project-file-downloads>
+                                <project-file-downloads project-id="{{projectFile.project_id}}" file-id="{{projectFile.id}}"></project-file-downloads>
                             </td>
                             <td>
-                                <a ng-href="#/projects/files/{{projectFile.id}}/edit">Edit</a>
+                                <a ng-href="#/project/{{projectFile.project_id}}/file/{{projectFile.id}}/edit">Edit</a>
                                 |
-                                <a ng-href="#/projects/files/{{projectFile.id}}/remove">Remove</a>
+                                <a ng-href="#/project/{{projectFile.project_id}}/file/{{projectFile.id}}/remove">Remove</a>
                             </td>
                         </tr>
                         </tbody>

@@ -3,26 +3,28 @@
     namespace SdcProject\Transformers;
 
     use League\Fractal\TransformerAbstract;
+    use LucaDegasperi\OAuth2Server\Facades\Authorizer;
     use SdcProject\Entities\Project;
 
     class ProjectTransformer extends TransformerAbstract {
 
-        protected $availableIncludes = [
-            'owner',
+        protected $defaultIncludes = [
             'client',
-            'projectMembers'
+            'owner',
+            'members'
         ];
 
         public function transform(Project $project) {
             return [
                 'id' => $project->id,
                 'name' => $project->name,
-                'client' => $project->client()->find($project->client_id),
                 'client_id' => $project->client_id,
+                'owner_id' => $project->owner_id,
                 'description' => $project->description,
                 'progress' => $project->progress,
                 'status' => $project->status,
-                'due_date' => $project->due_date
+                'due_date' => $project->due_date,
+                'isMember' => $project->owner_id != Authorizer::getResourceOwnerId()
             ];
         }
 

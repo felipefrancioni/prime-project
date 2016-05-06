@@ -11,7 +11,7 @@ angular.module('app.controllers')
                     noteId: $scope.projectNote.id
                 }
             ).then(function () {
-                $location.path('/projects/' + $routeParams.projectId + '/notes');
+                $location.path('/project/' + $routeParams.projectId + '/notes');
             });
         }
     }]);

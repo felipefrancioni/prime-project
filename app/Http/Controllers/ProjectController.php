@@ -23,6 +23,9 @@
         public function __construct(ProjectRepository $projectRepository, ProjectService $projectService) {
             $this->projectRepository = $projectRepository;
             $this->projectService = $projectService;
+
+            $this->middleware('check-project-owner', ['except' => ['index', 'store', 'show']]);
+            $this->middleware('check-project-permission', ['except' => ['index', 'store', 'update', 'destroy']]);
         }
 
         /**
@@ -31,7 +34,7 @@
          * @return \Illuminate\Http\Response
          */
         public function index() {
-            return $this->projectRepository->findWhere(['owner_id' => Authorizer::getResourceOwnerId()]);
+            return $this->projectRepository->findWithOwnerAndMember(Authorizer::getResourceOwnerId());
         }
 
 
@@ -54,9 +57,6 @@
          */
         public function show($id) {
             try {
-                if (!$this->projectService->checkProjectPermissions($id)) {
-                    return ['error' => 'Access forbidden!'];
-                }
                 return $this->projectRepository->find($id);
             } catch (NotFoundHttpException $ex) {
                 return [
@@ -81,9 +81,6 @@
          */
         public function update(Request $request, $id) {
             try {
-                if (!$this->projectService->checkProjectOwner($id)) {
-                    return ['error' => 'Access forbidden!'];
-                }
                 return $this->projectService->update($request->all(), $id);
             } catch (ModelNotFoundException $ex) {
                 return [
@@ -101,9 +98,6 @@
          */
         public function destroy($id) {
             try {
-                if (!$this->projectService->checkProjectPermissions($id)) {
-                    return ['error' => 'Access forbidden!'];
-                }
                 $this->projectRepository->delete($id);
             } catch (ModelNotFoundException $ex) {
                 return [

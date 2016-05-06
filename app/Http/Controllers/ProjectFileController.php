@@ -2,12 +2,10 @@
 
     namespace SdcProject\Http\Controllers;
 
-    use Illuminate\Database\Eloquent\ModelNotFoundException;
     use Illuminate\Http\Request;
     use SdcProject\Http\Requests;
     use SdcProject\Repositories\ProjectFileRepository;
     use SdcProject\Services\ProjectFileService;
-    use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
     class ProjectFileController extends Controller {
@@ -43,9 +41,6 @@
 
 
         public function showFile($fileId) {
-            if (!$this->projectFileService->checkProjectPermissions($fileId)) {
-                return ['error' => 'Access forbidden!'];
-            }
             $filePath = $this->projectFileService->getFilePath($fileId);
             $fileContent = file_get_contents($filePath);
             $file64 = base64_encode($fileContent);
@@ -57,23 +52,14 @@
         }
 
         public function show($fileId) {
-            if (!$this->projectFileService->checkProjectPermissions($fileId)) {
-                return ['error' => 'Access forbidden!'];
-            }
             return $this->projectFileRepository->find($fileId);
         }
 
         public function update(Request $request, $fileId) {
-            if (!$this->projectFileService->checkProjectOwner($fileId)) {
-                return ['error' => 'Access forbidden!'];
-            }
             return $this->projectFileService->update($request->all(), $fileId);
         }
 
         public function destroy($fileId) {
-            if (!$this->projectFileService->checkProjectOwner($fileId)) {
-                return ['error' => 'Access forbidden!'];
-            }
             return $this->projectFileService->delete($fileId);
 
         }

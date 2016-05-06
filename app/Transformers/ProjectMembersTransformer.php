@@ -1,17 +1,18 @@
 <?php
 
-namespace SdcProject\Transformers;
+    namespace SdcProject\Transformers;
 
 
-use League\Fractal\TransformerAbstract;
-use SdcProject\Entities\ProjectMember;
+    use League\Fractal\TransformerAbstract;
+    use SdcProject\Entities\ProjectMember;
+    use SdcProject\Entities\User;
 
-class ProjectMembersTransformer extends TransformerAbstract {
-    public function transform(ProjectMember $member) {
-        return [
-            'id' => $member->User->id,
-            'name' => $member->User->name,
-            'email' => $member->User->email
-        ];
+    class ProjectMembersTransformer extends TransformerAbstract {
+        public function transform(User $member) {
+            return [
+                'id' => $member->id,
+                'name' => $member->name,
+                'email' => $member->email
+            ];
+        }
     }
-}

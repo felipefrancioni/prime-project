@@ -24,11 +24,7 @@
             ]
         ]);
 
-        //    Route::group(['middleware' => 'CheckProjectOwner'], function () {
-        //
-        //    });
-
-        Route::group(['prefix' => 'project'], function () {
+        Route::group(['middleware' => 'check-project-permission', 'prefix' => 'project'], function () {
             Route::post('{projectId}/member', 'ProjectController@storeNewMember');//ok
             Route::delete('{projectId}/member/{idMember}', 'ProjectController@destroyMember');//ok
             Route::get('{projectId}/member', 'ProjectController@showMembers'); //ok
@@ -47,11 +43,11 @@
             Route::delete('{projectId}/note/{noteId}', 'ProjectNoteController@destroy');//ok
 
             Route::get('{projectId}/file', 'ProjectFileController@index');//
-            Route::get('file/{fileId}', 'ProjectFileController@show');//ok
-            Route::get('file/{fileId}/download', 'ProjectFileController@showFile');//ok
+            Route::get('{projectId}/file/{fileId}', 'ProjectFileController@show');//ok
+            Route::get('{projectId}/file/{fileId}/download', 'ProjectFileController@showFile');//ok
             Route::post('{projectId}/file', 'ProjectFileController@store');//ok
-            Route::put('file/{fileId}', 'ProjectFileController@update');//ok
-            Route::delete('file/{fileId}', 'ProjectFileController@destroy');//ok
+            Route::put('{projectId}/file/{fileId}', 'ProjectFileController@update');//ok
+            Route::delete('{projectId}/file/{fileId}', 'ProjectFileController@destroy');//ok
         });
 
         Route::resource('user/authenticated', 'UserController@authenticated');

@@ -15,7 +15,7 @@ angular.module('app.controllers')
                     },
                     file: $scope.projectFile.file
                 }).success(function (data, status, headers, config) {
-                    $location.path('/projects/' + $routeParams.projectId + '/files');
+                    $location.path('/project/' + $routeParams.projectId + '/files');
                 });
             }
         }

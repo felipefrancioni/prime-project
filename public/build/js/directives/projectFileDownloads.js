@@ -25,7 +25,7 @@ angular.module('app.directives').directive('projectFileDownloads', ['$timeout', 
                     var anchor = $element.children()[0];
                     $(anchor).addClass('disabled');
                     $(anchor).text('Loadind...');
-                    ProjectFile.download({projectId: null, fileId: $attrs.fileId}, function (data) {
+                    ProjectFile.download({projectId: $attrs.projectId, fileId: $attrs.fileId}, function (data) {
                         $scope.$emit('salvar-arquivo', data);
                     });
                 }

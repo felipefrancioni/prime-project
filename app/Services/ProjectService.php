@@ -51,27 +51,20 @@
             }
         }
 
-
         public function checkProjectOwner($projectId) {
-            return $this->isOwner($projectId, Authorizer::getResourceOwnerId());
+            $userId = Authorizer::getResourceOwnerId();
+            return $this->projectRepository->isOwner($projectId, $userId);
         }
 
         public function checkProjectMember($projectId) {
-            return $this->hasMember($projectId, Authorizer::getResourceOwnerId());
+            $userId = Authorizer::getResourceOwnerId();
+            return $this->projectRepository->hasMember($projectId, $userId);
         }
 
         public function checkProjectPermissions($projectId) {
-            return $this->checkProjectMember($projectId) || $this->checkProjectOwner($projectId);
+            if ($this->checkProjectOwner($projectId) || $this->checkProjectMember($projectId)) {
+                return true;
+            }
+            return false;
         }
-
-        public function hasMember($idProject, $idMember) {
-            $project = $this->projectRepository->skipPresenter()->find($idProject);
-            return $project->projectMembers()->find($idMember);
-        }
-
-        public function isOwner($projectId, $userId) {
-            $project = $this->projectRepository->skipPresenter()->find($projectId);
-            return $project->owner()->find($userId);
-        }
-
     }

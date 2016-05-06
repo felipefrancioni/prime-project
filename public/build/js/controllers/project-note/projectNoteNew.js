@@ -5,7 +5,7 @@ angular.module('app.controllers')
         $scope.save = function () {
             if ($scope.form.$valid) {
                 $scope.projectNote.$save({projectId: $routeParams.projectId}).then(function () {
-                    $location.path('/projects/' + $routeParams.projectId + '/notes');
+                    $location.path('/project/' + $routeParams.projectId + '/notes');
                 });
             }
         }

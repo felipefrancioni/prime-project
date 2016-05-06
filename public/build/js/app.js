@@ -27,6 +27,12 @@ app.provider('appConfig', function () {
                 {value: 3, label: 'Concluído'}
             ]
         },
+        projectTask: {
+            status: [
+                {value: 1, label: 'Incompleta'},
+                {value: 2, label: 'Completa'}
+            ]
+        },
         urls: {
             projectFile: '/project/{{projectId}}/file/{{fileId}}'
         },
@@ -68,67 +74,87 @@ app.config(['$routeProvider', '$httpProvider', 'OAuthProvider', 'OAuthTokenProvi
             templateUrl: 'build/views/client/list.html',
             controller: 'ClientListController'
         })
-        .when('/clients/new', {
+        .when('/client/new', {
             templateUrl: 'build/views/client/new.html',
             controller: 'ClientNewController'
         })
-        .when('/clients/:id/edit', {
+        .when('/client/:id/edit', {
             templateUrl: 'build/views/client/edit.html',
             controller: 'ClientEditController'
         })
-        .when('/clients/:id/remove', {
+        .when('/client/:id/remove', {
             templateUrl: 'build/views/client/remove.html',
             controller: 'ClientRemoveController'
         })
-        .when('/projects/:projectId/notes', {
+        .when('/project/:projectId/notes', {
             templateUrl: 'build/views/project-note/list.html',
             controller: 'ProjectNoteListController'
         })
-        .when('/projects/:projectId/notes/:noteId/show', {
+        .when('/project/:projectId/note/:noteId/show', {
             templateUrl: 'build/views/project-note/show.html',
             controller: 'ProjectNoteShowController'
         })
-        .when('/projects/:projectId/notes/new', {
+        .when('/project/:projectId/note/new', {
             templateUrl: 'build/views/project-note/new.html',
             controller: 'ProjectNoteNewController'
         })
-        .when('/projects/:projectId/notes/:noteId/edit', {
+        .when('/project/:projectId/note/:noteId/edit', {
             templateUrl: 'build/views/project-note/edit.html',
             controller: 'ProjectNoteEditController'
         })
-        .when('/projects/:projectId/notes/:noteId/remove', {
+        .when('/project/:projectId/note/:noteId/remove', {
             templateUrl: 'build/views/project-note/remove.html',
             controller: 'ProjectNoteRemoveController'
+        })
+        .when('/project/:projectId/tasks', {
+            templateUrl: 'build/views/project-task/list.html',
+            controller: 'ProjectTaskListController'
+        })
+        .when('/project/:projectId/task/:taskId/show', {
+            templateUrl: 'build/views/project-task/show.html',
+            controller: 'ProjectTaskShowController'
+        })
+        .when('/project/:projectId/task/new', {
+            templateUrl: 'build/views/project-task/new.html',
+            controller: 'ProjectTaskNewController'
+        })
+        .when('/project/:projectId/task/:taskId/edit', {
+            templateUrl: 'build/views/project-task/edit.html',
+            controller: 'ProjectTaskEditController'
+        })
+        .when('/project/:projectId/task/:taskId/remove', {
+            templateUrl: 'build/views/project-task/remove.html',
+            controller: 'ProjectTaskRemoveController'
         })
         .when('/projects', {
             templateUrl: 'build/views/project/list.html',
             controller: 'ProjectListController'
         })
-        .when('/projects/new', {
+        .when('/project/new', {
             templateUrl: 'build/views/project/new.html',
             controller: 'ProjectNewController'
         })
-        .when('/projects/:projectId/edit', {
+        .when('/project/:projectId/edit', {
             templateUrl: 'build/views/project/edit.html',
             controller: 'ProjectEditController'
         })
-        .when('/projects/:projectId/remove', {
+        .when('/project/:projectId/remove', {
             templateUrl: 'build/views/project/remove.html',
             controller: 'ProjectRemoveController'
         })
-        .when('/projects/:projectId/files', {
+        .when('/project/:projectId/files', {
             templateUrl: 'build/views/project-file/list.html',
             controller: 'ProjectFileListController'
         })
-        .when('/projects/:projectId/files/new', {
+        .when('/project/:projectId/file/new', {
             templateUrl: 'build/views/project-file/new.html',
             controller: 'ProjectFileNewController'
         })
-        .when('/projects/files/:fileId/edit', {
+        .when('/project/:projectId/file/:fileId/edit', {
             templateUrl: 'build/views/project-file/edit.html',
             controller: 'ProjectFileEditController'
         })
-        .when('/projects/files/:fileId/remove', {
+        .when('/project/:projectId/file/:fileId/remove', {
             templateUrl: 'build/views/project-file/remove.html',
             controller: 'ProjectFileRemoveController'
         });
