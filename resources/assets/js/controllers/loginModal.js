@@ -8,7 +8,8 @@ angular.module('app.controllers')
         '$modalInstance',
         'authService',
         '$cookies',
-        'User', function ($rootScope, $scope, $location, OAuth, OAuthToken, $modalInstance, authService, $cookies, User) {
+        'User',
+        function ($rootScope, $scope, $location, OAuth, OAuthToken, $modalInstance, authService, $cookies, User) {
             $scope.user = {
                 username: '',
                 password: ''
