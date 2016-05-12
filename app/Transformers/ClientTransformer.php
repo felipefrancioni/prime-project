@@ -7,6 +7,11 @@ use League\Fractal\TransformerAbstract;
 use SdcProject\Entities\Client;
 
 class ClientTransformer extends TransformerAbstract {
+
+    protected $defaultIncludes = [
+        'projects'
+    ];
+
     public function transform(Client $client) {
         return [
             'id' => $client->id,
@@ -17,5 +22,11 @@ class ClientTransformer extends TransformerAbstract {
             'address' => $client->address,
             'obs' => $client->obs
         ];
+    }
+
+    public function includeProjects(Client $client) {
+        $transformer = new ProjectTransformer();
+        $transformer->setDefaultIncludes([]);
+        return $this->collection($client->projects, $transformer);
     }
 }

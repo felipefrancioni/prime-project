@@ -17,7 +17,8 @@
                             <td>{{projectNote.note}}</td>
                             <td>
                                 <a ng-href="#/project/{{projectNote.project_id}}/note/{{projectNote.id}}/edit">Edit</a> |
-                                <a ng-href="#/project/{{projectNote.project_id}}/note/{{projectNote.id}}/remove">Remove</a>
+                                <a ng-href="#/project/{{projectNote.project_id}}/note/{{projectNote.id}}/remove">Remove</a> |
+                                <a href="javascript:void(0)" ng-click="print(projectNote)">Impressão</a>
                             </td>
                         </tr>
                         </tbody>

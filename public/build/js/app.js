@@ -10,7 +10,11 @@ var app = angular.module('app', [
     'ui.bootstrap.modal',
     'ui.bootstrap.datepicker',
     'ngFileUpload',
-    'http-auth-interceptor'
+    'http-auth-interceptor',
+    'angularUtils.directives.dirPagination',
+    'ui.bootstrap.dropdown',
+    'pusher-angular',
+    'ui-notification'
 ]);
 
 angular.module('app.controllers', ['ngMessages', 'angular-oauth2']);
@@ -22,6 +26,7 @@ angular.module('app.services', ['ngResource']);
 app.provider('appConfig', function () {
     var config = {
         baseUrl: 'http://localhost:8000',
+        pusherKey: 'c7eb71dfa12343fa4f42',
         project: {
             status: [
                 {value: 1, label: 'Não iniciado'},
@@ -43,7 +48,7 @@ app.provider('appConfig', function () {
                 var headerGetter = headers();
                 if (headerGetter['content-type'] == 'application/json' || headerGetter['content-type'] == 'text/json') {
                     var dataJson = JSON.parse(data);
-                    if (dataJson.hasOwnProperty('data')) {
+                    if (dataJson.hasOwnProperty('data') && Object.keys(dataJson).length == 1) {
                         return dataJson.data;
                     }
                     return dataJson;
@@ -81,23 +86,38 @@ app.config(['$routeProvider', '$httpProvider', 'OAuthProvider', 'OAuthTokenProvi
         })
         .when('/home', {
             templateUrl: 'build/views/home.html',
-            controller: 'HomeController'
+            controller: 'HomeController',
+            title: 'Projetos'
         })
         .when('/clients', {
             templateUrl: 'build/views/client/list.html',
-            controller: 'ClientListController'
+            controller: 'ClientListController',
+            title: 'Clients'
+        })
+        .when('/clients/dashboard', {
+            templateUrl: 'build/views/client/dashboard.html',
+            controller: 'ClientDashboardController',
+            title: 'Clients'
         })
         .when('/client/new', {
             templateUrl: 'build/views/client/new.html',
-            controller: 'ClientNewController'
+            controller: 'ClientNewController',
+            title: 'Clients'
         })
         .when('/client/:id/edit', {
             templateUrl: 'build/views/client/edit.html',
-            controller: 'ClientEditController'
+            controller: 'ClientEditController',
+            title: 'Clients'
         })
         .when('/client/:id/remove', {
             templateUrl: 'build/views/client/remove.html',
-            controller: 'ClientRemoveController'
+            controller: 'ClientRemoveController',
+            title: 'Clients'
+        })
+        .when('/projects/dashboard', {
+            templateUrl: 'build/views/project/dashboard.html',
+            controller: 'ProjectDashboardController',
+            title: 'Projects'
         })
         .when('/project/:projectId/notes', {
             templateUrl: 'build/views/project-note/list.html',
@@ -209,35 +229,71 @@ app.config(['$routeProvider', '$httpProvider', 'OAuthProvider', 'OAuthTokenProvi
 
 }])
 
-app.run(['$rootScope', '$location', '$http', 'OAuth', '$modal', 'httpBuffer', function ($rootScope, $location, $http, OAuth, $modal, httpBuffer) {
+app.run(['$rootScope', '$location', '$http', 'OAuth', '$modal', 'httpBuffer', '$pusher', '$cookies', 'appConfig', 'Notification',
+    function ($rootScope, $location, $http, OAuth, $modal, httpBuffer, $pusher, $cookies, appConfig, Notification) {
 
-    $rootScope.$on('$routeChangeStart', function (event, next, current) {
-        if (next.$$route.originalPath != '/login') {
-            if (!OAuth.isAuthenticated()) {
-                $location.path('login');
+        $rootScope.$on('pusher-build', function (event, data) {
+            if (data.next.$$route.originalPath != '/login') {
+                if (OAuth.isAuthenticated()) {
+                    if (!window.client) {
+                        window.client = new Pusher(appConfig.pusherKey);
+                        var pusher = $pusher(window.client);
+                        var channel = pusher.subscribe('user.' + $cookies.getObject('user').id);
+                        channel.bind('SdcProject\\Events\\TaskWasIncluded',
+                            function (data) {
+                                var name = data.task.name
+                                Notification.success('Tarefa ' + name + ' foi incluida!');
+                            }
+                        );
+                    }
+                }
             }
-        }
-    });
-    $rootScope.$on('oauth:error', function (event, data) {
-        // Ignore `invalid_grant` error - should be catched on `LoginController`.
-        if ('invalid_grant' === data.rejection.data.error) {
-            return;
-        }
+        });
 
-        // Refresh token when a `invalid_token` error occurs.
-        if ('access_denied' === data.rejection.data.error) {
-            httpBuffer.append(data.rejection.config, data.deferred);
-            if (!$rootScope.loginModalOpened) {
-                var modalInstance = $modal.open({
-                    templateUrl: 'build/views/templates/loginModal.html',
-                    controller: 'LoginModalController'
-                });
-                $rootScope.loginModalOpened = true;
+        $rootScope.$on('pusher-destroy', function (event, data) {
+            if (data.next.$$route.originalPath == '/login') {
+                if (window.client) {
+                    window.client.disconnect();
+                    window.client = null;
+                }
             }
-            return;
-        }
+        });
 
-        // Redirect to `/login` with the `error_reason`.
-        return $location.path('login');
-    });
-}]);
+        $rootScope.$on('$routeChangeStart', function (event, next, current) {
+            if (next.$$route.originalPath != '/login') {
+                if (!OAuth.isAuthenticated()) {
+                    $location.path('login');
+                }
+            }
+            $rootScope.$emit('pusher-build', {next: next});
+            $rootScope.$emit('pusher-destroy', {next: next});
+
+        });
+
+        $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
+            $rootScope.pageTitle = current.$$route.title;
+        });
+
+        $rootScope.$on('oauth:error', function (event, data) {
+            // Ignore `invalid_grant` error - should be catched on `LoginController`.
+            if ('invalid_grant' === data.rejection.data.error) {
+                return;
+            }
+
+            // Refresh token when a `invalid_token` error occurs.
+            if ('access_denied' === data.rejection.data.error) {
+                httpBuffer.append(data.rejection.config, data.deferred);
+                if (!$rootScope.loginModalOpened) {
+                    var modalInstance = $modal.open({
+                        templateUrl: 'build/views/templates/refreshModal.html',
+                        controller: 'RefreshModalController'
+                    });
+                    $rootScope.loginModalOpened = true;
+                }
+                return;
+            }
+
+            // Redirect to `/login` with the `error_reason`.
+            return $location.path('login');
+        });
+    }]);

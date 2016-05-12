@@ -1,5 +1,5 @@
-angular.module('app.directives').directive('projectFileDownloads', ['$timeout', 'ProjectFile', 'appConfig',
-    function ($timeout, ProjectFile, appConfig) {
+angular.module('app.directives').directive('projectFileDownloads', ['$timeout', '$window', 'ProjectFile', 'appConfig',
+    function ($timeout, $window, ProjectFile, appConfig) {
         return {
             restrict: 'E',
             templateUrl: appConfig.baseUrl + '/build/views/templates/projectFileDownload.html',
@@ -8,11 +8,12 @@ angular.module('app.directives').directive('projectFileDownloads', ['$timeout', 
                     var anchor = element.children()[0];
                     $(anchor).removeClass('disabled');
                     $(anchor).text('Save File');
-                    $(anchor).attr({
-                        href: 'data:application-octet-stream;base64,' + data.file,
-                        download: data.name
+                    blobUtil.base64StringToBlob(data.file).then(function (blob) {
+                        $(anchor).attr({
+                            href: $window.URL.createObjectURL(blob, data.mime_type),
+                            download: data.name
+                        });
                     });
-
                     $timeout(function () {
                         scope.downloadFile = function () {
                         };

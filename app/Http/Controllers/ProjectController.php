@@ -33,8 +33,8 @@
          *
          * @return \Illuminate\Http\Response
          */
-        public function index() {
-            return $this->projectRepository->findWithOwnerAndMember(Authorizer::getResourceOwnerId());
+        public function index(Request $request) {
+            return $this->projectRepository->findOwner(Authorizer::getResourceOwnerId(), $request->query->get('limit'));
         }
 
 

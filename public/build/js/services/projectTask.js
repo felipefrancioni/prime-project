@@ -20,7 +20,6 @@ angular.module('app.services').service('ProjectTask', ['$resource', '$filter', '
                             var arrayDate = transformedResponse.due_date.split('-');
                             transformedResponse.due_date = new Date(arrayDate[0], parseInt(arrayDate[1]) - 1, arrayDate[2]);
                         }
-                        console.log(transformedResponse);
                         return transformedResponse;
                     }
                 },

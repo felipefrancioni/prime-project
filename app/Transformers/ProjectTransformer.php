@@ -11,7 +11,10 @@
         protected $defaultIncludes = [
             'client',
             'owner',
-            'members'
+            'members',
+            'notes',
+            'tasks',
+            'files'
         ];
 
         public function transform(Project $project) {
@@ -21,10 +24,12 @@
                 'client_id' => $project->client_id,
                 'owner_id' => $project->owner_id,
                 'description' => $project->description,
-                'progress' => $project->progress,
-                'status' => $project->status,
+                'progress' => intval($project->progress),
+                'status' => intval($project->status),
                 'due_date' => $project->due_date,
-                'isMember' => $project->owner_id != Authorizer::getResourceOwnerId()
+                'isMember' => $project->owner_id != Authorizer::getResourceOwnerId(),
+                'tasks_count' => $project->projectTasks->count(),
+                'tasks_opened' => $this->countTasksOpened($project)
             ];
         }
 
@@ -38,6 +43,28 @@
 
         public function includeMembers(Project $project) {
             return $this->collection($project->projectMembers, new MemberTransformer());
+        }
+
+        public function includeNotes(Project $project) {
+            return $this->collection($project->projectNotes, new ProjectNotesTransformer());
+        }
+
+        public function includeFiles(Project $project) {
+            return $this->collection($project->files, new ProjectFileTransformer());
+        }
+
+        public function includeTasks(Project $project) {
+            return $this->collection($project->projectTasks, new ProjectTasksTransformer());
+        }
+
+        public function countTasksOpened(Project $project) {
+            $count = 0;
+            foreach ($project->projectTasks as $task) {
+                if ($task->status == 1) {
+                    $count++;
+                }
+            }
+            return $count;
         }
 
     }

@@ -15,8 +15,10 @@ angular.module('app.services').service('Project', ['$resource', 'appConfig',
                         }
                         return transformedResponse;
                     }
+                },
+                query: {
+                    isArray: false
                 }
-
             }
         );
     }]);

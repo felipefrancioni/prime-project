@@ -6,20 +6,23 @@
     use SdcProject\Http\Requests;
     use SdcProject\Repositories\ProjectFileRepository;
     use SdcProject\Services\ProjectFileService;
+    use Illuminate\Contracts\Filesystem\Factory as Storage;
 
 
     class ProjectFileController extends Controller {
 
         private $projectFileService;
         private $projectFileRepository;
+        private $storage;
 
         /**
          * @param ProjectFileService $projectFileService
          * @param ProjectFileRepository $projectFileRepository
          */
-        public function __construct(ProjectFileService $projectFileService, ProjectFileRepository $projectFileRepository) {
+        public function __construct(ProjectFileService $projectFileService, ProjectFileRepository $projectFileRepository, Storage $storage) {
             $this->projectFileService = $projectFileService;
             $this->projectFileRepository = $projectFileRepository;
+            $this->storage = $storage;
         }
 
         public function index($projectId) {
@@ -40,14 +43,16 @@
         }
 
 
-        public function showFile($fileId) {
+        public function showFile($projectId, $fileId) {
+            $model = $this->projectFileRepository->skipPresenter()->find($fileId);
             $filePath = $this->projectFileService->getFilePath($fileId);
             $fileContent = file_get_contents($filePath);
             $file64 = base64_encode($fileContent);
             return [
                 'file' => $file64,
                 'size' => filesize($filePath),
-                'name' => $this->projectFileService->getFileName($fileId)
+                'name' => $this->projectFileService->getFileName($fileId),
+                'mime_type' => $this->storage->mimeType($model->getFileName())
             ];
         }
 
