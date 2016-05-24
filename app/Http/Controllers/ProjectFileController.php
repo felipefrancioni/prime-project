@@ -56,15 +56,15 @@
             ];
         }
 
-        public function show($fileId) {
+        public function show($projectId, $fileId) {
             return $this->projectFileRepository->find($fileId);
         }
 
-        public function update(Request $request, $fileId) {
+        public function update(Request $request, $projectId, $fileId) {
             return $this->projectFileService->update($request->all(), $fileId);
         }
 
-        public function destroy($fileId) {
+        public function destroy($projectId, $fileId) {
             return $this->projectFileService->delete($fileId);
 
         }
