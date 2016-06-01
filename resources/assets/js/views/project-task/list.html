@@ -23,13 +23,14 @@
                             <th>Start date</th>
                             <th>Due date</th>
                             <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr ng-repeat="projectTask in projectTasks">
                             <td>{{projectTask.name}}</td>
-                            <td>{{projectTask.start_date}}</td>
-                            <td>{{projectTask.due_date}}</td>
+                            <td>{{projectTask.start_date | dateBr}}</td>
+                            <td>{{projectTask.due_date | dateBr}}</td>
                             <td>{{projectTask.status}}</td>
                             <td>
                                 <a ng-href="#/project/{{projectTask.project_id}}/task/{{projectTask.id}}/edit">Edit</a> |

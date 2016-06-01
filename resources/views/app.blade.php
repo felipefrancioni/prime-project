@@ -87,9 +87,6 @@
     <script src="{{ asset('build/js/controllers/project-task/projectTaskRemove.js') }}"></script>
 
     <script src="{{ asset('build/js/controllers/project-member/projectMemberList.js') }}"></script>
-    <script src="{{ asset('build/js/controllers/project-member/projectMemberNew.js') }}"></script>
-    <script src="{{ asset('build/js/controllers/project-member/projectMemberEdit.js') }}"></script>
-    <script src="{{ asset('build/js/controllers/project-member/projectMemberShow.js') }}"></script>
     <script src="{{ asset('build/js/controllers/project-member/projectMemberRemove.js') }}"></script>
 
     <script src="{{ asset('build/js/controllers/project-file/projectFileList.js') }}"></script>

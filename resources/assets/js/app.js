@@ -163,18 +163,6 @@ app.config(['$routeProvider', '$httpProvider', 'OAuthProvider', 'OAuthTokenProvi
             templateUrl: 'build/views/project-member/list.html',
             controller: 'ProjectMemberListController'
         })
-        .when('/project/:projectId/member/:memberId/show', {
-            templateUrl: 'build/views/project-member/show.html',
-            controller: 'ProjectMemberShowController'
-        })
-        .when('/project/:projectId/member/new', {
-            templateUrl: 'build/views/project-member/new.html',
-            controller: 'ProjectMemberNewController'
-        })
-        .when('/project/:projectId/member/:memberId/edit', {
-            templateUrl: 'build/views/project-member/edit.html',
-            controller: 'ProjectMemberEditController'
-        })
         .when('/project/:projectId/member/:memberId/remove', {
             templateUrl: 'build/views/project-member/remove.html',
             controller: 'ProjectMemberRemoveController'

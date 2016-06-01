@@ -16,6 +16,6 @@ class ProjectMemberValidator extends LaravelValidator
 
     protected $rules = [
         'project_id' => 'required',
-        'user_id' => 'required'
+        'user_id' => 'required | unique:project_members'
     ];
 }
